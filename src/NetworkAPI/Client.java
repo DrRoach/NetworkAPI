@@ -37,7 +37,6 @@ public class Client {
     }
 
     public void messageReceived(String message) {
-        System.out.println(message);
     }
 
     public void connectionClosed(int id) {

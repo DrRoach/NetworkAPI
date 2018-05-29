@@ -8,7 +8,7 @@ public class DevClient extends Client {
     }
 
     public static void main(String[] args) {
-        Client client = new Client("localhost", 2103);
+        DevClient client = new DevClient("localhost", 2103);
 
         // Wait 5 seconds then message our server saying "HELLO SERVER"
         try {

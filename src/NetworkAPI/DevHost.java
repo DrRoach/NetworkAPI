@@ -10,6 +10,7 @@ public class DevHost extends Server {
     public static void main(String[] args) {
         DevHost host = new DevHost(2103);
 
+        // Wait 10 seconds then broadcast to all connected clients
         try {
             TimeUnit.SECONDS.sleep(10);
             System.out.println("BROADCASTING");
@@ -26,9 +27,7 @@ public class DevHost extends Server {
 
     @Override
     public void messageReceived(String message) {
-        super.messageReceived(message);
-
-        System.out.println("YAY: " + message);
+        System.out.println(message);
     }
 
     @Override

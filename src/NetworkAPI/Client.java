@@ -3,6 +3,7 @@ package NetworkAPI;
 import NetworkAPI.Exceptions.ClientConnectionFailedException;
 import NetworkAPI.Exceptions.PortOutOfRangeException;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 
 public class Client {
@@ -46,6 +47,10 @@ public class Client {
 
     public void send(String message) {
         _connection.send(message);
+    }
+
+    public InetAddress getAddress() {
+        return _connection.getAddress();
     }
 
     public boolean connected() {

@@ -1,6 +1,8 @@
 # Java Network API
 Always having to recreate your Java networking code? Well now you don't have to anymore thanks to this Java Network API. This library makes is easy and simple to implement networking, even if you have no knowledge or prior experience of working with networking in Java, you'll be able to implement a server-client architecture with a few simple lines of code.
 
+Example uses for this range from messaging apps to games to many other applications that require communication between devices.
+
 ### Example
 
 Server file:

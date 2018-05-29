@@ -10,6 +10,8 @@ public class DevClient {
             TimeUnit.SECONDS.sleep(5);
             System.out.println("Messaging server");
             client.send("HELLOW SERVER");
+
+            System.out.println(client.connected());
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }

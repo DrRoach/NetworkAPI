@@ -6,11 +6,14 @@ import NetworkAPI.Exceptions.PortOutOfRangeException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ClientTests {
     @Test
     public void ConnectionTest() {
+        Client client = new Client("127.0.0.1", 2103);
 
+        assertTrue(client.connected());
     }
 
     @Test

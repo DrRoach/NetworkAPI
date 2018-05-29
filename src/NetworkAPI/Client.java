@@ -48,4 +48,12 @@ public class Client {
     public void send(String message) {
         _connection.send(message);
     }
+
+    public boolean connected() {
+        if (_connection == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

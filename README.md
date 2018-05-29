@@ -6,24 +6,24 @@ Always having to recreate your Java networking code? Well now you don't have to 
 Server file:
 
 ```Java
-    public class Host extends Server {
-        Host(int port) {
-            super(port);
-        }
-        
-        public static void main(String[] args) {
-            Host host = new Host(2103);
-        }
+public class Host extends Server {
+    Host(int port) {
+        super(port);
     }
+        
+    public static void main(String[] args) {
+        Host host = new Host(2103); 
+    }
+}
 ```
 Client file:
 
 ```Java
-    public class DevClient extends Client {
-        public static void main(String[] args) {
-            DevClient client = new DevClient("127.0.0.1", 2103);
-        }
+public class DevClient extends Client {
+    public static void main(String[] args) {
+        DevClient client = new DevClient("127.0.0.1", 2103); 
     }
+}
 ```
 
 It's as simple as that. With these two simple files, you can now run your server and connect with any devices that run your client file. It's simple to send messages between the connected devices too.
@@ -33,40 +33,40 @@ It's as simple as that. With these two simple files, you can now run your server
 Server file:
 
 ```Java
-    public class Host extends Server {
-        private Host _host;
+public class Host extends Server {
+    private Host _host;
         
-        Host(int port) {
-            super(port);
-        }
-        
-        public static void main(String[] args) {
-            _host = new Host(2103);
-        }
-        
-        @Override
-        public void newConnection(Connection connection) {
-            // Send a message to our new client connection
-            connection.send("Hello new client.");
-            
-            // Inform all new clients of the new connection
-            _host.broadcast("There is a new connection.");
-        }
+    Host(int port) {
+        super(port); 
     }
+        
+    public static void main(String[] args) {
+        _host = new Host(2103); 
+    }
+        
+    @Override
+    public void newConnection(Connection connection) {
+        // Send a message to our new client connection
+        connection.send("Hello new client.");
+            
+        // Inform all new clients of the new connection
+        _host.broadcast("There is a new connection."); 
+    }
+}
 ```
 Client file:
 
 ```Java
-    public class DevClient extends Client {
-        public static void main(String[] args) {
-            DevClient client = new DevClient("127.0.0.1", 2103);
-        }
-        
-        @Override
-        public void messageReceived(String message) {
-            System.out.println("New message from server: " + message);
-        }
+public class DevClient extends Client {
+    public static void main(String[] args) {
+        DevClient client = new DevClient("127.0.0.1", 2103); 
     }
+        
+    @Override
+    public void messageReceived(String message) {
+        System.out.println("New message from server: " + message); 
+    }
+}
 ```
 
 With these two simple files we can now connect our clients to our server and message both our new clients individually and broadcast to all connected clients when we get a new connection. We also print any new messages that we get from the server in the clients' output stream.

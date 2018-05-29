@@ -9,11 +9,8 @@ import java.util.List;
 public class ConnectionHandler implements Runnable {
     // Variable to control whether we should be listening for connections
     private boolean _running;
-
     private ServerSocket _server;
-
     private List<Connection> _connections = new ArrayList<Connection>();
-
     private Server _callbacks;
 
     ConnectionHandler(ServerSocket server) {

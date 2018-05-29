@@ -37,8 +37,10 @@ public class Connection implements Runnable {
             Thread receiveThread = new Thread(_receive);
             receiveThread.start();
 
-            // Create our send/receive objects
+            // Create send object to be used to send messages
             _send = new Send(_out);
+
+            // If instance of Connection object is a Server then call `newConnection()`
             if (_serverCallbacks != null) {
                 _serverCallbacks.newConnection(this);
             }

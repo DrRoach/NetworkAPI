@@ -8,7 +8,6 @@ public class DevClient extends Client {
     //    super(host, port);
     //}
 
-
     public DevClient(String host, int port, int timeout) {
         super(host, port, timeout);
     }

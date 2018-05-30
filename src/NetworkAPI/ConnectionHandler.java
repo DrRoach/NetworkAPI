@@ -60,4 +60,8 @@ public class ConnectionHandler implements Runnable {
     public void newConnection(Connection connection) {
         this._callbacks.newConnection(connection);
     }
+
+    public void stop() {
+        _running = false;
+    }
 }

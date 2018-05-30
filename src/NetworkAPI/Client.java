@@ -4,12 +4,29 @@ import NetworkAPI.Exceptions.ClientConnectionFailedException;
 import NetworkAPI.Exceptions.PortOutOfRangeException;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 public class Client {
     private Connection _connection;
 
+    /**
+     * Constructor that is called when user wants to use default timeout.
+     *
+     * This constructor should be called when the user is happy to accept 5 seconds
+     *  as the default timeout for connection. This is the simplest method to implement
+     *  when using this library but may not be useful in all cases such as slow
+     *  connection with server.
+     *
+     * @param host - The server IP address to connect to
+     * @param port - The server port to connect to
+     */
     public Client(String host, int port) {
+        new Client(host, port, 5000);
+    }
+
+    public Client(String host, int port, int timeout) {
         // Make sure that our port is in range
         if (port < 0 || port > 65535) {
             throw new PortOutOfRangeException("You can only use port 0-65535");
@@ -17,7 +34,11 @@ public class Client {
 
         try {
             // Connect to our server
-            Socket client = new Socket(host, port);
+            // Create the socket address obj for our server
+            SocketAddress serverAddress = new InetSocketAddress(host, port);
+            Socket client = new Socket();
+            // Try and connect to our server socket
+            client.connect(serverAddress, timeout);
 
             // Handle our client/server interactions
             handle(client);
@@ -54,10 +75,6 @@ public class Client {
     }
 
     public boolean connected() {
-        if (_connection == null) {
-            return false;
-        } else {
-            return true;
-        }
+        return _connection != null;
     }
 }

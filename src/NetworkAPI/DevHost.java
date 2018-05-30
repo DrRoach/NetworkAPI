@@ -3,19 +3,12 @@ package NetworkAPI;
 import java.util.concurrent.TimeUnit;
 
 public class DevHost extends Server {
-    DevHost(int port) {
+    public DevHost(int port) {
         super(port);
     }
 
     public static void main(String[] args) {
         DevHost host = new DevHost(2103);
-
-        // Wait 10 seconds then broadcast to all connected clients
-        try {
-            TimeUnit.SECONDS.sleep(10);
-            System.out.println("BROADCASTING");
-            host.broadcast("TESTING BROAD");
-        } catch (Exception ex) {}
     }
 
     @Override

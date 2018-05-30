@@ -1,24 +1,36 @@
 package NetworkAPI.Tests;
 
+import NetworkAPI.DevHost;
 import NetworkAPI.Exceptions.PortOutOfRangeException;
 import NetworkAPI.Server;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ServerTests {
     @Test
-    public void portOutOfRangeExceptionTest() {
+    public void PortOutOfRangeExceptionTest() {
         assertThrows(PortOutOfRangeException.class,
             ()->{
-                Server server = new Server(-4);
+                DevHost host = new DevHost(-4);
             });
 
         assertThrows(PortOutOfRangeException.class,
             ()->{
-                Server server = new Server(6999999);
+                DevHost host = new DevHost(6999999);
             });
 
-        Server server = new Server(2103);
+        DevHost host = new DevHost(2103);
+        assertTrue(host.online());
+        host.stop();
+    }
+
+    @Test
+    public void ConnectionTest() {
+        DevHost host = new DevHost(2103);
+
+        assertTrue(host.online());
+        host.stop();
     }
 }

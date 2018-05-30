@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 
 public class Server {
     private ConnectionHandler _connectionHandler;
+    private ServerSocket _server;
 
     /**
      * First method called to make a new Server instance
@@ -25,10 +26,10 @@ public class Server {
 
         try {
             // Open our server socket
-            ServerSocket server = new ServerSocket(port);
+            _server = new ServerSocket(port);
 
             // Start listening for new connections to our server
-            ConnectionHandler connectionHandler = new ConnectionHandler(server);
+            ConnectionHandler connectionHandler = new ConnectionHandler(_server);
             Thread connectionThread = new Thread(connectionHandler);
             connectionThread.start();
 
@@ -81,5 +82,22 @@ public class Server {
 
     public void connectionClosed(int id) {
         System.out.println("Connection " + id + " closed");
+    }
+
+    public boolean online() {
+        return _connectionHandler != null;
+    }
+
+    public void stop() {
+        try {
+            // Let our connection handler know that we're stopping
+            _connectionHandler.stop();
+
+            // Close our server socket
+            _server.close();
+        } catch (IOException ex) {
+            System.out.println("Error when stopping server.");
+            System.out.println(ex.getMessage());
+        }
     }
 }

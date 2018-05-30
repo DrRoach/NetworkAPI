@@ -43,7 +43,6 @@ public class Client {
             // Handle our client/server interactions
             handle(client);
         } catch (IOException ex) {
-            System.out.println(ex.getMessage());
             throw new ClientConnectionFailedException("There was an error when connecting to the server: " + ex.getMessage());
         }
     }

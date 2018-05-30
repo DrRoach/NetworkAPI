@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ServerTests {
     @Test
-    public void PortOutOfRangeExceptionTest() {
+    public void PortRangeTest() {
         assertThrows(PortOutOfRangeException.class,
             ()->{
                 DevHost host = new DevHost(-4);

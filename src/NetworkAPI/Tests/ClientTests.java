@@ -17,7 +17,7 @@ public class ClientTests {
     }
 
     @Test
-    public void PortOutOfRangeTest() {
+    public void PortRangeTest() {
         assertThrows(PortOutOfRangeException.class,
             ()->{
                 DevClient client = new DevClient("127.0.0.1", -4, 1000);

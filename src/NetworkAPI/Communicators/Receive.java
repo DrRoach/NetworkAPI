@@ -16,8 +16,20 @@ public class Receive implements Runnable {
 
     public void run() {
         try {
+            int read;
+            StringBuilder returnString = new StringBuilder();
             while (_running) {
-                _connection.messageReceived(_in.readUTF());
+                // Read our byte array until we find a null character
+                while ((read = _in.readByte()) > -1) {
+                    returnString.append((char) read);
+                }
+
+                // If the returnString has something in it then notify connection and then
+                //  reset the StringBuilder
+                if (returnString.length() > 0) {
+                    _connection.messageReceived(returnString.toString());
+                    returnString.setLength(0);
+                }
             }
         } catch (IOException ex) {
             // If we hit here assume that connection has been lost

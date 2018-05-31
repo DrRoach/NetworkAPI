@@ -43,6 +43,12 @@ public class ConnectionHandler implements Runnable {
         }
     }
 
+    public void broadcast(byte[] message) {
+        for (Connection conn : _connections) {
+            conn.send(message);
+        }
+    }
+
     public void messageReceived(String message) {
         _callbacks.messageReceived(message);
     }

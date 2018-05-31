@@ -39,6 +39,8 @@ public class Connection implements Runnable {
 
             // Create send object to be used to send messages
             _send = new Send(_out);
+            Thread sendThread = new Thread(_send);
+            sendThread.start();
 
             // If instance of Connection object is a Server then call `newConnection()`
             if (_serverCallbacks != null) {
@@ -51,8 +53,12 @@ public class Connection implements Runnable {
 
     public void send(String message) {
         _send.setMessage(message);
-        Thread sendThread = new Thread(_send);
-        sendThread.start();
+        _send.send();
+    }
+
+    public void send(byte[] message) {
+        _send.setMessage(message);
+        _send.send();
     }
 
     public InetAddress getAddress() {

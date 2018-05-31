@@ -12,8 +12,10 @@ public class Send implements Runnable {
     }
 
     public void run() {
+    }
+
+    public void send() {
         try {
-            // Add our null character to our array
             _message = addNullChar();
             _out.write(_message);
         } catch (IOException ex) {

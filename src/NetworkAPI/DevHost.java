@@ -9,6 +9,12 @@ public class DevHost extends Server {
 
     public static void main(String[] args) {
         DevHost host = new DevHost(2103);
+
+        try {
+            TimeUnit.SECONDS.sleep(10);
+            System.out.println("BROADCASTING");
+            host.broadcast("TESTING BROAD");
+        } catch (Exception ex) {}
     }
 
     @Override

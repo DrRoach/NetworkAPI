@@ -9,6 +9,34 @@ public class Server {
     private ServerSocket _server;
 
     /**
+     * Start new server using encryption by default
+     *
+     * @param port - Port number to start server on
+     */
+    public Server(int port) {
+        startServer(port, true);
+    }
+
+    /**
+     * Start new server but allow user to decide whether or not to use encryption
+     *
+     * This method starts our server but it allows the user to disable encryption and server signature verification if
+     *  they don't want to use it. Whilst this isn't recommended as it allows people to eavesdrop on the messages being
+     *  sent or to pose as the server.
+     *
+     * @param port - Port number to host the server on
+     * @param useEncryption - Boolean to enable/disable message encryption and server signature verification
+     */
+    public Server(int port, boolean useEncryption) {
+        startServer(port, useEncryption);
+    }
+
+    private boolean portInRange(int port) {
+        // Make sure that our port doesn't exceed valid range
+        return port >= 0 && port <= 65535;
+    }
+
+    /**
      * First method called to make a new Server instance
      *
      * This method creates the ServerSocket to open for connections. It then creates the new ConnectionHandler
@@ -18,9 +46,14 @@ public class Server {
      *
      * @param port Port number to host the Server on
      */
-    public Server(int port) {
-        // Make sure that our port doesn't exceed valid range
-        if (port < 0 || port > 65535) {
+    private void startServer(int port, boolean useEncryption) {
+        if (useEncryption) {
+
+        }
+
+        System.out.println("Starting server...");
+
+        if (!portInRange(port)) {
             throw new PortOutOfRangeException("You can only use ports 0-65535");
         }
 
@@ -38,6 +71,8 @@ public class Server {
 
             // Set our callbacks method in ConnectionHandler to reference this class
             _connectionHandler.setCallbacks(this);
+
+            System.out.println("Server up and running.");
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }

@@ -116,7 +116,3 @@ There are a number of different updates in the works including but not limited t
 - Improved code testing
 - Improved code documentation
 - Server and client signature verification
-
-If there are any features that you want to request then feel free to add them here:
-
-[![Feature Requests](https://cloud.githubusercontent.com/assets/390379/10127973/045b3a96-6560-11e5-9b20-31a2032956b2.png)](https://feathub.com/DrRoach/NetworkAPI)

@@ -1,7 +1,8 @@
-package NetworkAPI;
+package main.java.com.github.networkapi;
 
-import NetworkAPI.Exceptions.ClientConnectionFailedException;
-import NetworkAPI.Exceptions.PortOutOfRangeException;
+import main.java.com.github.networkapi.exceptions.ClientConnectionFailedException;
+import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -9,7 +10,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 
 public class Client {
-    private Connection _connection;
+    private Connection connection;
 
     /**
      * Constructor that is called when user wants to use default timeout.
@@ -49,11 +50,11 @@ public class Client {
 
     private void handle(Socket client) {
         // Start our outgoing/incoming threads
-        _connection = new Connection(client);
+        connection = new Connection(client);
 
-        _connection.setCallbacks(this);
+        connection.setCallbacks(this);
 
-        Thread connectionThread = new Thread(_connection);
+        Thread connectionThread = new Thread(connection);
         connectionThread.start();
     }
 
@@ -66,14 +67,14 @@ public class Client {
     }
 
     public void send(String message) {
-        _connection.send(message);
+        connection.send(message);
     }
 
     public InetAddress getAddress() {
-        return _connection.getAddress();
+        return connection.getAddress();
     }
 
     public boolean connected() {
-        return _connection != null;
+        return connection != null;
     }
 }

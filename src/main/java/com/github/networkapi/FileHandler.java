@@ -1,10 +1,10 @@
-package NetworkAPI;
+package main.java.com.github.networkapi;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 
 public class FileHandler {
-    private File file = null;
+    private File file;
 
     public FileHandler(String filename) throws FileNotFoundException {
         file = new File(filename);

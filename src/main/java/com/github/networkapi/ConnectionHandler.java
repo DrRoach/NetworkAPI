@@ -1,4 +1,4 @@
-package NetworkAPI;
+package main.java.com.github.networkapi;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -8,29 +8,29 @@ import java.util.List;
 
 public class ConnectionHandler implements Runnable {
     // Variable to control whether we should be listening for connections
-    private boolean _running;
-    private ServerSocket _server;
-    private List<Connection> _connections = new ArrayList<Connection>();
-    private Server _callbacks;
+    private boolean running;
+    private ServerSocket server;
+    private List<Connection> connections = new ArrayList<Connection>();
+    private Server callbacks;
 
     ConnectionHandler(ServerSocket server) {
-        _running = true;
-        _server = server;
+        running = true;
+        this.server = server;
     }
 
     public void run() {
-        while (_running) {
+        while (running) {
             try {
-                Socket client = _server.accept();
+                Socket client = server.accept();
 
-                Connection conn = new Connection(_connections.size(), client);
+                Connection conn = new Connection(connections.size(), client);
 
                 conn.setCallbacks(this);
 
                 Thread connectionThread = new Thread(conn);
                 connectionThread.start();
 
-                _connections.add(conn);
+                connections.add(conn);
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());
             }
@@ -38,36 +38,36 @@ public class ConnectionHandler implements Runnable {
     }
 
     public void broadcast(String message) {
-        for (Connection conn : _connections) {
+        for (Connection conn : connections) {
             conn.send(message);
         }
     }
 
     public void broadcast(byte[] message) {
-        for (Connection conn : _connections) {
+        for (Connection conn : connections) {
             conn.send(message);
         }
     }
 
     public void messageReceived(String message) {
-        _callbacks.messageReceived(message);
+        callbacks.messageReceived(message);
     }
 
     public void connectionClosed(int id) {
-        _connections.set(id, null);
+        connections.set(id, null);
 
-        _callbacks.connectionClosed(id);
+        callbacks.connectionClosed(id);
     }
 
     public void setCallbacks(Server callbacks) {
-        this._callbacks = callbacks;
+        this.callbacks = callbacks;
     }
 
     public void newConnection(Connection connection) {
-        this._callbacks.newConnection(connection);
+        this.callbacks.newConnection(connection);
     }
 
     public void stop() {
-        _running = false;
+        running = false;
     }
 }

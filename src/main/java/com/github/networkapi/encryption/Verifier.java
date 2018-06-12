@@ -1,13 +1,22 @@
-package NetworkAPI.Encryption;
+package main.java.com.github.networkapi.encryption;
 
-import NetworkAPI.Exceptions.ExceptionCodes;
+import main.java.com.github.networkapi.exceptions.ExceptionCodes;
 
 import java.security.*;
 import java.util.Base64;
 
-;
-
 public class Verifier {
+    public byte[] generateSignature() {
+        try {
+            Signature signature = Signature.getInstance("SHA1withRSA");
+        } catch (NoSuchAlgorithmException ex) {
+            System.out.println(ex.getMessage());
+            System.exit(ExceptionCodes.NO_SUCH_ALGORITHM);
+        }
+
+        return new byte[0];
+    }
+
     public boolean verifySignature(String signatureString) {
         byte[] decodedSignature = Base64.getDecoder().decode(signatureString);
 

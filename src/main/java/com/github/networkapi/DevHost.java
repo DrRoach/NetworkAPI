@@ -1,4 +1,4 @@
-package NetworkAPI;
+package main.java.com.github.networkapi;
 
 import java.util.concurrent.TimeUnit;
 

@@ -1,12 +1,15 @@
-package NetworkAPI;
+package main.java.com.github.networkapi;
 
-import NetworkAPI.Exceptions.PortOutOfRangeException;
+import main.java.com.github.networkapi.encryption.ServerSetup;
+import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 
 public class Server {
-    private ConnectionHandler _connectionHandler;
-    private ServerSocket _server;
+    private ConnectionHandler connectionHandler;
+    private ServerSocket server;
+    private boolean useEncryption;
 
     /**
      * Start new server using encryption by default
@@ -14,6 +17,7 @@ public class Server {
      * @param port - Port number to start server on
      */
     public Server(int port) {
+        // Make sure that we use encryption by default
         startServer(port, true);
     }
 
@@ -47,8 +51,14 @@ public class Server {
      * @param port Port number to host the Server on
      */
     private void startServer(int port, boolean useEncryption) {
-        if (useEncryption) {
+        this.useEncryption = useEncryption;
 
+        if (useEncryption) {
+            System.out.println("Setting up encryption...");
+
+            new ServerSetup();
+
+            System.out.println("Server encryption setup complete.");
         }
 
         System.out.println("Starting server...");
@@ -59,18 +69,18 @@ public class Server {
 
         try {
             // Open our server socket
-            _server = new ServerSocket(port);
+            server = new ServerSocket(port);
 
             // Start listening for new connections to our server
-            ConnectionHandler connectionHandler = new ConnectionHandler(_server);
+            ConnectionHandler connectionHandler = new ConnectionHandler(server);
             Thread connectionThread = new Thread(connectionHandler);
             connectionThread.start();
 
             // Store our ConnectionHandler to be used elsewhere
-            _connectionHandler = connectionHandler;
+            this.connectionHandler = connectionHandler;
 
             // Set our callbacks method in ConnectionHandler to reference this class
-            _connectionHandler.setCallbacks(this);
+            connectionHandler.setCallbacks(this);
 
             System.out.println("Server up and running.");
         } catch (IOException ex) {
@@ -87,7 +97,7 @@ public class Server {
      * @param message The message that will be sent to the connected clients
      */
     public void broadcast(String message) {
-        _connectionHandler.broadcast(message);
+        connectionHandler.broadcast(message);
     }
 
     /**
@@ -100,6 +110,12 @@ public class Server {
      * @param connection Socket connection for the client
      */
     public void newConnection(Connection connection) {
+        if (useEncryption) {
+            // Send server signature to the new connection
+            //TODO: FIX THIS
+            byte[] signature = null;
+        }
+
         System.out.println("New connection from: " + connection.getAddress());
     }
 
@@ -120,16 +136,16 @@ public class Server {
     }
 
     public boolean online() {
-        return _connectionHandler != null;
+        return connectionHandler != null;
     }
 
     public void stop() {
         try {
             // Let our connection handler know that we're stopping
-            _connectionHandler.stop();
+            connectionHandler.stop();
 
             // Close our server socket
-            _server.close();
+            server.close();
         } catch (IOException ex) {
             System.out.println("Error when stopping server.");
             System.out.println(ex.getMessage());

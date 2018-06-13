@@ -3,6 +3,9 @@ Always having to recreate your Java networking code? Well now you don't have to 
 
 Example uses for this range from messaging apps to games to many other applications that require communication between devices.
 
+## This project has moved
+This project has moved to [Gitlab](https://gitlab.com/DrRoach/NetworkAPI).
+
 ### Example
 
 Server file:

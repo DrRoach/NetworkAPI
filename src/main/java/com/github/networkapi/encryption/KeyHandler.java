@@ -5,10 +5,7 @@ import main.java.com.github.networkapi.exceptions.FileNotFoundException;
 import main.java.com.github.networkapi.FileHandler;
 
 import java.io.*;
-import java.security.Key;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
+import java.security.*;
 
 public class KeyHandler {
     public static Key readPublic(String keyFile) {
@@ -25,6 +22,32 @@ public class KeyHandler {
         } catch (main.java.com.github.networkapi.exceptions.FileNotFoundException ex) {
             System.out.println(ex.getMessage());
             System.exit(ExceptionCodes.FILE_NOT_FOUND);
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+            System.exit(ExceptionCodes.IO_EXCEPTION);
+        } catch (ClassNotFoundException ex) {
+            System.out.println(ex.getMessage());
+            System.exit(ExceptionCodes.CLASS_NOT_FOUND);
+        }
+
+        return key;
+    }
+
+    public static Key readPrivate(String keyFile) {
+        Key key = null;
+
+        try {
+            FileHandler file = new FileHandler(keyFile + ".prv");
+
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file.getName()));
+
+            // Read the key from file
+            key = (PrivateKey) in.readObject();
+
+            in.close();
+        } catch (java.io.FileNotFoundException ex) {
+            System.out.println(ex.getMessage());
+            System.exit(ExceptionCodes.PRIVATE_KEY_NOT_FOUND);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
             System.exit(ExceptionCodes.IO_EXCEPTION);

@@ -10,6 +10,7 @@ public class Server {
     private ConnectionHandler connectionHandler;
     private ServerSocket server;
     private boolean useEncryption;
+    private byte[] signature;
 
     /**
      * Start new server using encryption by default
@@ -54,11 +55,8 @@ public class Server {
         this.useEncryption = useEncryption;
 
         if (useEncryption) {
-            System.out.println("Setting up encryption...");
-
-            new ServerSetup();
-
-            System.out.println("Server encryption setup complete.");
+            // Setup everything that's needed for encryption
+            setupEncryption();
         }
 
         System.out.println("Starting server...");
@@ -72,7 +70,15 @@ public class Server {
             server = new ServerSocket(port);
 
             // Start listening for new connections to our server
-            ConnectionHandler connectionHandler = new ConnectionHandler(server);
+            ConnectionHandler connectionHandler;
+
+            // If we are using encryption we need to make sure to pass our signature
+            if (useEncryption) {
+                connectionHandler = new ConnectionHandler(server, signature);
+            } else {
+                connectionHandler = new ConnectionHandler(server);
+            }
+
             Thread connectionThread = new Thread(connectionHandler);
             connectionThread.start();
 
@@ -86,6 +92,14 @@ public class Server {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
+    }
+
+    private void setupEncryption() {
+        // Make sure that the server is fully setup before use
+        ServerSetup serverSetup = new ServerSetup();
+
+        // Set the server signature to be passed to clients
+        signature = serverSetup.getSignature();
     }
 
     /**

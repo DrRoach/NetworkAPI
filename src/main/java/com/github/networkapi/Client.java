@@ -24,10 +24,21 @@ public class Client {
      * @param port - The server port to connect to
      */
     public Client(String host, int port) {
-        new Client(host, port, 5000);
+        new Client(host, port, 5000, true);
     }
 
+    /**
+     * Constructor to set timeout but use default encryption setting which is true.
+     *
+     * @param host
+     * @param port
+     * @param timeout
+     */
     public Client(String host, int port, int timeout) {
+        new Client(host, port, timeout, true);
+    }
+
+    public Client(String host, int port, int timeout, boolean useEncryption) {
         // Make sure that our port is in range
         if (port < 0 || port > 65535) {
             throw new PortOutOfRangeException("You can only use port 0-65535");
@@ -42,13 +53,13 @@ public class Client {
             client.connect(serverAddress, timeout);
 
             // Handle our client/server interactions
-            handle(client);
+            handle(client, useEncryption);
         } catch (IOException ex) {
             throw new ClientConnectionFailedException("There was an error when connecting to the server: " + ex.getMessage());
         }
     }
 
-    private void handle(Socket client) {
+    private void handle(Socket client, boolean useEncryption) {
         // Start our outgoing/incoming threads
         connection = new Connection(client);
 

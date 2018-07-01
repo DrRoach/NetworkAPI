@@ -18,6 +18,8 @@ public class Connection implements Runnable {
 
     Connection(Socket conn) {
         this.conn = conn;
+
+        // This is only used by clients
     }
 
     Connection(int id, Socket conn) {

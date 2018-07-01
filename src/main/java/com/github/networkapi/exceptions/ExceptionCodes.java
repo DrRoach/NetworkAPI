@@ -10,4 +10,7 @@ public class ExceptionCodes {
     public static int SERVER_START_FAILED = 7;
     public static int SERVER_PUBLIC_KEY_FILE_NOT_FOUND_EXCEPTION = 8;
     public static int SERVER_PUBLIC_KEY_IO_EXCEPTION = 9;
+    public static int INVALID_SIGNATURE_PRIVATE_KEY = 10;
+    public static int SIGNATURE_SIGN_EXCEPTION = 11;
+    public static int PRIVATE_KEY_NOT_FOUND = 12;
 }

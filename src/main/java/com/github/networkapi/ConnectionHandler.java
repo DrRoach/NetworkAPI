@@ -12,10 +12,19 @@ public class ConnectionHandler implements Runnable {
     private ServerSocket server;
     private List<Connection> connections = new ArrayList<Connection>();
     private Server callbacks;
+    private byte[] signature;
+    private boolean useEncryption = true;
 
     ConnectionHandler(ServerSocket server) {
         running = true;
         this.server = server;
+        this.useEncryption = false;
+    }
+
+    ConnectionHandler(ServerSocket server, byte[] signature) {
+        running = true;
+        this.server = server;
+        this.signature = signature;
     }
 
     public void run() {
@@ -29,6 +38,9 @@ public class ConnectionHandler implements Runnable {
 
                 Thread connectionThread = new Thread(conn);
                 connectionThread.start();
+
+                // If we are using encryption send the signature to client to verify
+                conn.send(signature);
 
                 connections.add(conn);
             } catch (IOException ex) {

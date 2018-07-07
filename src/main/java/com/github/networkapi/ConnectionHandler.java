@@ -39,9 +39,6 @@ public class ConnectionHandler implements Runnable {
                 Thread connectionThread = new Thread(conn);
                 connectionThread.start();
 
-                // If we are using encryption send the signature to client to verify
-                conn.send(signature);
-
                 connections.add(conn);
             } catch (IOException ex) {
                 System.out.println(ex.getMessage());

@@ -13,4 +13,6 @@ public class ExceptionCodes {
     public static int INVALID_SIGNATURE_PRIVATE_KEY = 10;
     public static int SIGNATURE_SIGN_EXCEPTION = 11;
     public static int PRIVATE_KEY_NOT_FOUND = 12;
+    public static int INVALID_SERVER_SIGNATURE = 13;
+    public static int CONNECTION_TO_SERVER_LOST = 14;
 }

@@ -1,5 +1,7 @@
 package main.java.com.github.networkapi.encryption;
 
+import main.java.com.github.networkapi.config.Config;
+
 import java.io.*;
 import java.security.Key;
 
@@ -16,7 +18,7 @@ public class ServerSetup {
         Key privateKey = KeyHandler.readPrivate("server");
 
         // Generate our signature to be passed to clients
-        signature = ServerSignature.generateSignature(privateKey, "SUPER_SECRET");
+        signature = ServerSignature.generateSignature(privateKey, Config.encryptionSignature);
     }
 
     public static boolean keysExist() {

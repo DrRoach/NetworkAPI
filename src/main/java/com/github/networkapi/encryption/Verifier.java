@@ -1,5 +1,6 @@
 package main.java.com.github.networkapi.encryption;
 
+import main.java.com.github.networkapi.config.Config;
 import main.java.com.github.networkapi.exceptions.ExceptionCodes;
 
 import java.security.*;
@@ -28,7 +29,7 @@ public class Verifier {
 
             signature.initVerify((PublicKey) serverPublicKey);
 
-            signature.update("SUPER_SECRET".getBytes());
+            signature.update(Config.encryptionSignature.getBytes());
 
             return signature.verify(decodedSignature);
         } catch (NoSuchAlgorithmException ex) {

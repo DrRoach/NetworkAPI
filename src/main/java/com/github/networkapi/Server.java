@@ -126,8 +126,7 @@ public class Server {
     public void newConnection(Connection connection) {
         if (useEncryption) {
             // Send server signature to the new connection
-            //TODO: FIX THIS
-            byte[] signature = null;
+            connection.send(signature);
         }
 
         System.out.println("New connection from: " + connection.getAddress());

@@ -1,6 +1,9 @@
 package main.java.com.github.networkapi;
 
+import main.java.com.github.networkapi.encryption.Verifier;
 import main.java.com.github.networkapi.exceptions.ClientConnectionFailedException;
+import main.java.com.github.networkapi.exceptions.ExceptionCodes;
+import main.java.com.github.networkapi.exceptions.InvalidServerSignatureException;
 import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
 
 import java.io.IOException;
@@ -11,6 +14,8 @@ import java.net.SocketAddress;
 
 public class Client {
     private Connection connection;
+    private boolean useEncryption;
+    private boolean serverVerified = false;
 
     /**
      * Constructor that is called when user wants to use default timeout.
@@ -39,6 +44,9 @@ public class Client {
     }
 
     public Client(String host, int port, int timeout, boolean useEncryption) {
+        // Set whether or not we're using encryption
+        this.useEncryption = useEncryption;
+
         // Make sure that our port is in range
         if (port < 0 || port > 65535) {
             throw new PortOutOfRangeException("You can only use port 0-65535");
@@ -53,13 +61,13 @@ public class Client {
             client.connect(serverAddress, timeout);
 
             // Handle our client/server interactions
-            handle(client, useEncryption);
+            handle(client);
         } catch (IOException ex) {
             throw new ClientConnectionFailedException("There was an error when connecting to the server: " + ex.getMessage());
         }
     }
 
-    private void handle(Socket client, boolean useEncryption) {
+    private void handle(Socket client) {
         // Start our outgoing/incoming threads
         connection = new Connection(client);
 
@@ -70,11 +78,15 @@ public class Client {
     }
 
     public void messageReceived(String message) {
+        System.out.println(message);
+        if (useEncryption && !serverVerified) {
+            validateServerSignature(message);
+        }
     }
 
     public void connectionClosed(int id) {
         System.out.println("Lost connection to server");
-        System.exit(1);
+        System.exit(ExceptionCodes.CONNECTION_TO_SERVER_LOST);
     }
 
     public void send(String message) {
@@ -87,5 +99,16 @@ public class Client {
 
     public boolean connected() {
         return connection != null;
+    }
+
+    private void validateServerSignature(String signature) {
+        Verifier verifier = new Verifier();
+        boolean verified = verifier.verifySignature(signature);
+
+        if (verified) {
+            serverVerified = true;
+        } else {
+            throw new InvalidServerSignatureException("The servers signature wasn't valid.");
+        }
     }
 }

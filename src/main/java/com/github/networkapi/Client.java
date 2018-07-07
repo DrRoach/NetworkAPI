@@ -44,6 +44,7 @@ public class Client {
     }
 
     public Client(String host, int port, int timeout, boolean useEncryption) {
+        useEncryption = false;
         // Set whether or not we're using encryption
         this.useEncryption = useEncryption;
 
@@ -78,7 +79,6 @@ public class Client {
     }
 
     public void messageReceived(String message) {
-        System.out.println(message);
         if (useEncryption && !serverVerified) {
             validateServerSignature(message);
         }

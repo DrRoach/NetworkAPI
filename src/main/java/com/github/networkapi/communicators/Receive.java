@@ -27,7 +27,6 @@ public class Receive implements Runnable {
                 // If the returnString has something in it then notify connection and then
                 //  reset the StringBuilder
                 if (returnString.length() > 0) {
-                    System.out.println(returnString.toString());
                     connection.messageReceived(returnString.toString());
                     returnString.setLength(0);
                 }

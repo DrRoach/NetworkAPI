@@ -11,7 +11,7 @@ import java.net.Socket;
 
 public class Connection implements Runnable {
     private Socket conn;
-    private Send sendThread;
+    private Send send;
     private ConnectionHandler serverCallbacks = null;
     private Client clientCallbacks = null;
     private int id = -1;
@@ -38,8 +38,8 @@ public class Connection implements Runnable {
             receiveThread.start();
 
             // Create send object to be used to send messages
-            sendThread = new Send(out);
-            Thread sendThread = new Thread(this.sendThread);
+            send = new Send(out);
+            Thread sendThread = new Thread(this.send);
             sendThread.start();
 
             // If instance of Connection object is a Server then call `newConnection()`
@@ -52,13 +52,13 @@ public class Connection implements Runnable {
     }
 
     public void send(String message) {
-        sendThread.setMessage(message);
-        sendThread.send();
+        send.setMessage(message);
+        send.send();
     }
 
     public void send(byte[] message) {
-        sendThread.setMessage(message);
-        sendThread.send();
+        send.setMessage(message);
+        send.send();
     }
 
     public InetAddress getAddress() {
@@ -66,7 +66,6 @@ public class Connection implements Runnable {
     }
 
     public void messageReceived(String message) {
-        System.out.println(clientCallbacks);
         if (serverCallbacks != null) {
             serverCallbacks.messageReceived(message);
         } else {

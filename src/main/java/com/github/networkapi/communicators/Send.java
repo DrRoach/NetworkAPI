@@ -12,9 +12,6 @@ public class Send implements Runnable {
     }
 
     public void run() {
-        while (true) {
-
-        }
     }
 
     public void send() {

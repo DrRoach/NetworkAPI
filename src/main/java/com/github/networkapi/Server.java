@@ -52,6 +52,7 @@ public class Server {
      * @param port Port number to host the Server on
      */
     private void startServer(int port, boolean useEncryption) {
+        useEncryption = false;
         this.useEncryption = useEncryption;
 
         if (useEncryption) {

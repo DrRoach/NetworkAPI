@@ -1,8 +1,7 @@
-package NetworkAPI.Tests;
+package test.java;
 
-import NetworkAPI.DevHost;
-import NetworkAPI.Exceptions.PortOutOfRangeException;
-import NetworkAPI.Server;
+import main.java.com.github.networkapi.DevHost;
+import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

@@ -1,12 +1,45 @@
-package NetworkAPI;
+package main.java.com.github.networkapi;
 
-import NetworkAPI.Exceptions.PortOutOfRangeException;
+import main.java.com.github.networkapi.encryption.ServerSetup;
+import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 
 public class Server {
-    private ConnectionHandler _connectionHandler;
-    private ServerSocket _server;
+    private ConnectionHandler connectionHandler;
+    private ServerSocket server;
+    private boolean useEncryption;
+    private byte[] signature;
+
+    /**
+     * Start new server using encryption by default
+     *
+     * @param port - Port number to start server on
+     */
+    public Server(int port) {
+        // Make sure that we use encryption by default
+        startServer(port, true);
+    }
+
+    /**
+     * Start new server but allow user to decide whether or not to use encryption
+     *
+     * This method starts our server but it allows the user to disable encryption and server signature verification if
+     *  they don't want to use it. Whilst this isn't recommended as it allows people to eavesdrop on the messages being
+     *  sent or to pose as the server.
+     *
+     * @param port - Port number to host the server on
+     * @param useEncryption - Boolean to enable/disable message encryption and server signature verification
+     */
+    public Server(int port, boolean useEncryption) {
+        startServer(port, useEncryption);
+    }
+
+    private boolean portInRange(int port) {
+        // Make sure that our port doesn't exceed valid range
+        return port >= 0 && port <= 65535;
+    }
 
     /**
      * First method called to make a new Server instance
@@ -18,29 +51,56 @@ public class Server {
      *
      * @param port Port number to host the Server on
      */
-    public Server(int port) {
-        // Make sure that our port doesn't exceed valid range
-        if (port < 0 || port > 65535) {
+    private void startServer(int port, boolean useEncryption) {
+        useEncryption = false;
+        this.useEncryption = useEncryption;
+
+        if (useEncryption) {
+            // Setup everything that's needed for encryption
+            setupEncryption();
+        }
+
+        System.out.println("Starting server...");
+
+        if (!portInRange(port)) {
             throw new PortOutOfRangeException("You can only use ports 0-65535");
         }
 
         try {
             // Open our server socket
-            _server = new ServerSocket(port);
+            server = new ServerSocket(port);
 
             // Start listening for new connections to our server
-            ConnectionHandler connectionHandler = new ConnectionHandler(_server);
+            ConnectionHandler connectionHandler;
+
+            // If we are using encryption we need to make sure to pass our signature
+            if (useEncryption) {
+                connectionHandler = new ConnectionHandler(server, signature);
+            } else {
+                connectionHandler = new ConnectionHandler(server);
+            }
+
             Thread connectionThread = new Thread(connectionHandler);
             connectionThread.start();
 
             // Store our ConnectionHandler to be used elsewhere
-            _connectionHandler = connectionHandler;
+            this.connectionHandler = connectionHandler;
 
             // Set our callbacks method in ConnectionHandler to reference this class
-            _connectionHandler.setCallbacks(this);
+            connectionHandler.setCallbacks(this);
+
+            System.out.println("Server up and running.");
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
+    }
+
+    private void setupEncryption() {
+        // Make sure that the server is fully setup before use
+        ServerSetup serverSetup = new ServerSetup();
+
+        // Set the server signature to be passed to clients
+        signature = serverSetup.getSignature();
     }
 
     /**
@@ -52,7 +112,7 @@ public class Server {
      * @param message The message that will be sent to the connected clients
      */
     public void broadcast(String message) {
-        _connectionHandler.broadcast(message);
+        connectionHandler.broadcast(message);
     }
 
     /**
@@ -65,6 +125,11 @@ public class Server {
      * @param connection Socket connection for the client
      */
     public void newConnection(Connection connection) {
+        if (useEncryption) {
+            // Send server signature to the new connection
+            connection.send(signature);
+        }
+
         System.out.println("New connection from: " + connection.getAddress());
     }
 
@@ -85,16 +150,16 @@ public class Server {
     }
 
     public boolean online() {
-        return _connectionHandler != null;
+        return connectionHandler != null;
     }
 
     public void stop() {
         try {
             // Let our connection handler know that we're stopping
-            _connectionHandler.stop();
+            connectionHandler.stop();
 
             // Close our server socket
-            _server.close();
+            server.close();
         } catch (IOException ex) {
             System.out.println("Error when stopping server.");
             System.out.println(ex.getMessage());

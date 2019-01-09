@@ -1,14 +1,14 @@
-package NetworkAPI.Communicators;
+package main.java.com.github.networkapi.communicators;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class Send implements Runnable {
-    private DataOutputStream _out;
-    private volatile byte[] _message;
+    private DataOutputStream out;
+    private volatile byte[] message;
 
     public Send(DataOutputStream out) {
-        _out = out;
+        this.out = out;
     }
 
     public void run() {
@@ -16,19 +16,19 @@ public class Send implements Runnable {
 
     public void send() {
         try {
-            _message = addNullChar();
-            _out.write(_message);
+            message = addNullChar();
+            out.write(message);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
     }
 
     public void setMessage(String message) {
-        _message = message.getBytes();
+        this.message = message.getBytes();
     }
 
     public void setMessage(byte[] message) {
-        _message = message;
+        this.message = message;
     }
 
     /**
@@ -41,15 +41,15 @@ public class Send implements Runnable {
      */
     private byte[] addNullChar() {
         // Create our result array with +1 size to account for NULL byte
-        byte[] result = new byte[_message.length + 1];
+        byte[] result = new byte[message.length + 1];
 
         // Create our null byte array to be copied onto the end
         byte[] nullByte = new byte[1];
         nullByte[0] = (byte) -1;
 
         // Merge the message and null byte arrays together
-        System.arraycopy(_message, 0, result, 0, _message.length);
-        System.arraycopy(nullByte, 0, result, _message.length, 1);
+        System.arraycopy(message, 0, result, 0, message.length);
+        System.arraycopy(nullByte, 0, result, message.length, 1);
 
         // Return our newly created array
         return result;

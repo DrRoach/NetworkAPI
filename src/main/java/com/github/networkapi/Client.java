@@ -1,7 +1,11 @@
-package NetworkAPI;
+package main.java.com.github.networkapi;
 
-import NetworkAPI.Exceptions.ClientConnectionFailedException;
-import NetworkAPI.Exceptions.PortOutOfRangeException;
+import main.java.com.github.networkapi.encryption.Verifier;
+import main.java.com.github.networkapi.exceptions.ClientConnectionFailedException;
+import main.java.com.github.networkapi.exceptions.ExceptionCodes;
+import main.java.com.github.networkapi.exceptions.InvalidServerSignatureException;
+import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -9,7 +13,9 @@ import java.net.Socket;
 import java.net.SocketAddress;
 
 public class Client {
-    private Connection _connection;
+    private Connection connection;
+    private boolean useEncryption;
+    private boolean serverVerified = false;
 
     /**
      * Constructor that is called when user wants to use default timeout.
@@ -23,10 +29,25 @@ public class Client {
      * @param port - The server port to connect to
      */
     public Client(String host, int port) {
-        new Client(host, port, 5000);
+        new Client(host, port, 5000, true);
     }
 
+    /**
+     * Constructor to set timeout but use default encryption setting which is true.
+     *
+     * @param host
+     * @param port
+     * @param timeout
+     */
     public Client(String host, int port, int timeout) {
+        new Client(host, port, timeout, true);
+    }
+
+    public Client(String host, int port, int timeout, boolean useEncryption) {
+        useEncryption = false;
+        // Set whether or not we're using encryption
+        this.useEncryption = useEncryption;
+
         // Make sure that our port is in range
         if (port < 0 || port > 65535) {
             throw new PortOutOfRangeException("You can only use port 0-65535");
@@ -49,31 +70,45 @@ public class Client {
 
     private void handle(Socket client) {
         // Start our outgoing/incoming threads
-        _connection = new Connection(client);
+        connection = new Connection(client);
 
-        _connection.setCallbacks(this);
+        connection.setCallbacks(this);
 
-        Thread connectionThread = new Thread(_connection);
+        Thread connectionThread = new Thread(connection);
         connectionThread.start();
     }
 
     public void messageReceived(String message) {
+        if (useEncryption && !serverVerified) {
+            validateServerSignature(message);
+        }
     }
 
     public void connectionClosed(int id) {
         System.out.println("Lost connection to server");
-        System.exit(1);
+        System.exit(ExceptionCodes.CONNECTION_TO_SERVER_LOST);
     }
 
     public void send(String message) {
-        _connection.send(message);
+        connection.send(message);
     }
 
     public InetAddress getAddress() {
-        return _connection.getAddress();
+        return connection.getAddress();
     }
 
     public boolean connected() {
-        return _connection != null;
+        return connection != null;
+    }
+
+    private void validateServerSignature(String signature) {
+        Verifier verifier = new Verifier();
+        boolean verified = verifier.verifySignature(signature);
+
+        if (verified) {
+            serverVerified = true;
+        } else {
+            throw new InvalidServerSignatureException("The servers signature wasn't valid.");
+        }
     }
 }

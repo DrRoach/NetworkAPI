@@ -1,4 +1,4 @@
-package NetworkAPI;
+package main.java.com.github.networkapi;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +18,8 @@ public class DevClient extends Client {
 
     @Override
     public void messageReceived(String message) {
-        System.out.println(message);
+        super.messageReceived(message);
+
+        System.out.println("HI " + message);
     }
 }

@@ -29,7 +29,7 @@ public class Client {
      * @param port - The server port to connect to
      */
     public Client(String host, int port) {
-        new Client(host, port, 5000, true);
+        setupClient(host, port, 5000, false);
     }
 
     /**
@@ -40,10 +40,15 @@ public class Client {
      * @param timeout
      */
     public Client(String host, int port, int timeout) {
-        new Client(host, port, timeout, true);
+        setupClient(host, port, timeout, false);
     }
 
     public Client(String host, int port, int timeout, boolean useEncryption) {
+        setupClient(host, port, timeout, useEncryption);
+    }
+
+    private void setupClient(String host, int port, int timeout, boolean useEncryption)
+    {
         useEncryption = false;
         // Set whether or not we're using encryption
         this.useEncryption = useEncryption;

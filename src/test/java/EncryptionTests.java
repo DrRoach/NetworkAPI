@@ -1,9 +1,9 @@
 package test.java;
 
 import main.java.com.github.networkapi.encryption.ServerSetup;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class EncryptionTests {
     @Test

@@ -3,10 +3,10 @@ package test.java;
 import main.java.com.github.networkapi.DevClient;
 import main.java.com.github.networkapi.exceptions.ClientConnectionFailedException;
 import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ClientTests {
     @Test

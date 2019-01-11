@@ -1,6 +1,8 @@
-package main.java.com.github.networkapi.encryption;
+package main.java.com.github.networkapi.encryption.setup;
 
 import main.java.com.github.networkapi.config.Config;
+import main.java.com.github.networkapi.encryption.KeyHandler;
+import main.java.com.github.networkapi.encryption.Signature;
 
 import java.io.*;
 import java.security.Key;

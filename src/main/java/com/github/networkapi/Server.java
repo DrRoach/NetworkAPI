@@ -1,6 +1,6 @@
 package main.java.com.github.networkapi;
 
-import main.java.com.github.networkapi.encryption.ServerSetup;
+import main.java.com.github.networkapi.encryption.setup.ServerSetup;
 import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
 
 import java.io.IOException;

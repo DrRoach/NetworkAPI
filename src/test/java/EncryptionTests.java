@@ -1,6 +1,6 @@
 package test.java;
 
-import main.java.com.github.networkapi.encryption.ServerSetup;
+import main.java.com.github.networkapi.encryption.setup.ServerSetup;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

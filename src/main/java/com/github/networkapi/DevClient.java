@@ -20,6 +20,6 @@ public class DevClient extends Client {
     public void messageReceived(String message) {
         super.messageReceived(message);
 
-        System.out.println("HI " + message);
+        System.out.println(message);
     }
 }

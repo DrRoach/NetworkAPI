@@ -5,6 +5,7 @@ import main.java.com.github.networkapi.exceptions.ClientConnectionFailedExceptio
 import main.java.com.github.networkapi.exceptions.ExceptionCodes;
 import main.java.com.github.networkapi.exceptions.InvalidServerSignatureException;
 import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -29,7 +30,7 @@ public class Client {
      * @param port - The server port to connect to
      */
     public Client(String host, int port) {
-        setupClient(host, port, 5000, false);
+        setupClient(host, port, 5000, true);
     }
 
     /**
@@ -40,7 +41,7 @@ public class Client {
      * @param timeout
      */
     public Client(String host, int port, int timeout) {
-        setupClient(host, port, timeout, false);
+        setupClient(host, port, timeout, true);
     }
 
     public Client(String host, int port, int timeout, boolean useEncryption) {
@@ -49,7 +50,6 @@ public class Client {
 
     private void setupClient(String host, int port, int timeout, boolean useEncryption)
     {
-        useEncryption = false;
         // Set whether or not we're using encryption
         this.useEncryption = useEncryption;
 

@@ -6,13 +6,14 @@ import main.java.com.github.networkapi.encryption.Signature;
 
 import java.io.*;
 import java.security.Key;
+import java.util.Set;
 
-public class ServerSetup {
+public class Setup {
     // The signature used to validate the server to new connections
     private byte[] signature;
 
-    public ServerSetup() {
-        if (!ServerSetup.keysExist()) {
+    public Setup() {
+        if (!Setup.keysExist()) {
             System.out.println("Generating server keys...");
             KeyHandler.generateKeyPair();
         }
@@ -24,7 +25,7 @@ public class ServerSetup {
     }
 
     public static boolean keysExist() {
-        return ServerSetup.publicKeyExists() && ServerSetup.privateKeyExists();
+        return Setup.publicKeyExists() && Setup.privateKeyExists();
     }
 
     /**
@@ -48,7 +49,7 @@ public class ServerSetup {
     }
 
     public static boolean deleteKeys() {
-        return ServerSetup.deletePublicKey() && ServerSetup.deletePrivateKey();
+        return Setup.deletePublicKey() && Setup.deletePrivateKey();
     }
 
     private static boolean deletePublicKey() {

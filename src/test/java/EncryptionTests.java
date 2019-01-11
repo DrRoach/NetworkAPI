@@ -1,6 +1,6 @@
 package test.java;
 
-import main.java.com.github.networkapi.encryption.setup.ServerSetup;
+import main.java.com.github.networkapi.encryption.setup.Setup;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,13 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class EncryptionTests {
     @Test
     public void keyCreationTest() {
-        assertTrue(ServerSetup.deleteKeys());
+        assertTrue(Setup.deleteKeys());
 
         // Make sure keys are deleted
-        assertTrue(!ServerSetup.keysExist());
+        assertTrue(!Setup.keysExist());
 
-        ServerSetup setup = new ServerSetup();
+        Setup setup = new Setup();
 
-        assertTrue(ServerSetup.keysExist());
+        assertTrue(Setup.keysExist());
     }
 }

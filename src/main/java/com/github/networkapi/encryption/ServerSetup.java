@@ -18,7 +18,7 @@ public class ServerSetup {
         Key privateKey = KeyHandler.readPrivate("server");
 
         // Generate our signature to be passed to clients
-        signature = ServerSignature.generateSignature(privateKey, Config.encryptionSignature);
+        signature = Signature.generateSignature(privateKey, Config.encryptionSignature);
     }
 
     public static boolean keysExist() {

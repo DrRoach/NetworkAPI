@@ -5,10 +5,10 @@ import main.java.com.github.networkapi.exceptions.ExceptionCodes;
 import java.security.*;
 import java.util.Base64;
 
-public class ServerSignature {
+public class Signature {
     public static byte[] generateSignature(Key privateKey, String signatureString) {
         try {
-            Signature signature = Signature.getInstance("SHA1withRSA");
+            java.security.Signature signature = java.security.Signature.getInstance("SHA1withRSA");
             signature.initSign((PrivateKey) privateKey, new SecureRandom());
 
             byte[] signatureStringBytes = signatureString.getBytes();

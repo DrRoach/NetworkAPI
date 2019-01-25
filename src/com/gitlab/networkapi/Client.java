@@ -1,11 +1,11 @@
-package main.java.com.github.networkapi;
+package com.gitlab.networkapi;
 
-import main.java.com.github.networkapi.encryption.Verifier;
-import main.java.com.github.networkapi.exceptions.ClientConnectionFailedException;
-import main.java.com.github.networkapi.exceptions.ExceptionCodes;
-import main.java.com.github.networkapi.exceptions.InvalidServerSignatureException;
-import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+import com.gitlab.networkapi.encryption.Verifier;
+import com.gitlab.networkapi.encryption.setup.Setup;
+import com.gitlab.networkapi.exceptions.ClientConnectionFailedException;
+import com.gitlab.networkapi.exceptions.ExceptionCodes;
+import com.gitlab.networkapi.exceptions.InvalidServerSignatureException;
+import com.gitlab.networkapi.exceptions.PortOutOfRangeException;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -17,6 +17,7 @@ public class Client {
     private Connection connection;
     private boolean useEncryption;
     private boolean serverVerified = false;
+    private byte[] signature;
 
     /**
      * Constructor that is called when user wants to use default timeout.
@@ -53,6 +54,10 @@ public class Client {
         // Set whether or not we're using encryption
         this.useEncryption = useEncryption;
 
+        if (useEncryption) {
+            setupEncryption();
+        }
+
         // Make sure that our port is in range
         if (port < 0 || port > 65535) {
             throw new PortOutOfRangeException("You can only use port 0-65535");
@@ -71,6 +76,13 @@ public class Client {
         } catch (IOException ex) {
             throw new ClientConnectionFailedException("There was an error when connecting to the server: " + ex.getMessage());
         }
+    }
+
+    private void setupEncryption()
+    {
+        Setup setup = new Setup(Setup.KEY_TYPE.CLIENT);
+
+        signature = setup.getSignature();
     }
 
     private void handle(Socket client) {

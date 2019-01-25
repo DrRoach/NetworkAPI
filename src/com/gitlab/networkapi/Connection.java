@@ -1,7 +1,7 @@
-package main.java.com.github.networkapi;
+package com.gitlab.networkapi;
 
-import main.java.com.github.networkapi.communicators.Receive;
-import main.java.com.github.networkapi.communicators.Send;
+import com.gitlab.networkapi.communicators.Receive;
+import com.gitlab.networkapi.communicators.Send;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

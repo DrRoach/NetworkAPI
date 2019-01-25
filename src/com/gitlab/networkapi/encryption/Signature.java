@@ -1,6 +1,6 @@
-package main.java.com.github.networkapi.encryption;
+package com.gitlab.networkapi.encryption;
 
-import main.java.com.github.networkapi.exceptions.ExceptionCodes;
+import com.gitlab.networkapi.exceptions.ExceptionCodes;
 
 import java.security.*;
 import java.util.Base64;

@@ -1,7 +1,8 @@
-package main.java.com.github.networkapi.encryption;
+package com.gitlab.networkapi.encryption;
 
-import main.java.com.github.networkapi.config.Config;
-import main.java.com.github.networkapi.exceptions.ExceptionCodes;
+import com.gitlab.networkapi.config.Config;
+import com.gitlab.networkapi.encryption.setup.Setup;
+import com.gitlab.networkapi.exceptions.ExceptionCodes;
 
 import java.security.*;
 import java.security.Signature;
@@ -14,7 +15,7 @@ public class Verifier {
         try {
             Signature signature = Signature.getInstance("SHA1withRSA");
 
-            Key serverPublicKey = KeyHandler.readPublic("server");
+            Key serverPublicKey = KeyHandler.readPublic(Setup.KEY_TYPE.SERVER, Setup.keyFile);
 
             signature.initVerify((PublicKey) serverPublicKey);
 

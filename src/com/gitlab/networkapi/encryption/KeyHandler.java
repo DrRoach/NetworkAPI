@@ -1,25 +1,33 @@
-package main.java.com.github.networkapi.encryption;
+package com.gitlab.networkapi.encryption;
 
-import main.java.com.github.networkapi.exceptions.ExceptionCodes;
-import main.java.com.github.networkapi.exceptions.FileNotFoundException;
-import main.java.com.github.networkapi.FileHandler;
+import com.gitlab.networkapi.encryption.setup.Setup;
+import com.gitlab.networkapi.exceptions.ExceptionCodes;
+import com.gitlab.networkapi.exceptions.FileNotFoundException;
+import com.gitlab.networkapi.FileHandler;
 
 import java.io.*;
 import java.security.*;
 
 public class KeyHandler {
-    public static Key readPublic(String keyFile) {
+    public static Key readPublic(Setup.KEY_TYPE keyType, String keyFile) {
         Key key = null;
 
+        String keyDir;
+        if (keyType == Setup.KEY_TYPE.SERVER) {
+            keyDir = "server/";
+        } else {
+            keyDir = "client/";
+        }
+
         try {
-            FileHandler file = new FileHandler(keyFile + ".pub");
+            FileHandler file = new FileHandler(keyDir + keyFile + ".pub");
 
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(file.getName()));
 
             key = (Key) in.readObject();
 
             in.close();
-        } catch (main.java.com.github.networkapi.exceptions.FileNotFoundException ex) {
+        } catch (FileNotFoundException ex) {
             System.out.println(ex.getMessage());
             System.exit(ExceptionCodes.FILE_NOT_FOUND);
         } catch (IOException ex) {
@@ -59,18 +67,20 @@ public class KeyHandler {
         return key;
     }
 
-    public static void generateKeyPair() {
+    public static void generateKeyPair(Setup.KEY_TYPE keyType, String keyFile) {
         try {
             KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
             generator.initialize(2048);
 
             KeyPair keyPair = generator.generateKeyPair();
 
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("server.pub"));
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(keyFile + ".pub"));
             out.writeObject(keyPair.getPublic());
             out.close();
 
-            out = new ObjectOutputStream(new FileOutputStream("server.prv"));
+            System.out.println("GENREATING");
+
+            out = new ObjectOutputStream(new FileOutputStream("client/" + keyFile + ".prv"));
             out.writeObject(keyPair.getPrivate());
         } catch (NoSuchAlgorithmException ex) {
             System.out.println(ex.getMessage());

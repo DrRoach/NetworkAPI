@@ -1,24 +1,31 @@
-package main.java.com.github.networkapi.encryption.setup;
+package com.gitlab.networkapi.encryption.setup;
 
-import main.java.com.github.networkapi.config.Config;
-import main.java.com.github.networkapi.encryption.KeyHandler;
-import main.java.com.github.networkapi.encryption.Signature;
+import com.gitlab.networkapi.config.Config;
+import com.gitlab.networkapi.encryption.KeyHandler;
+import com.gitlab.networkapi.encryption.Signature;
 
 import java.io.*;
 import java.security.Key;
-import java.util.Set;
 
 public class Setup {
-    // The signature used to validate the server to new connections
+    public static String keyFile = "networkapi";
+    public enum KEY_TYPE {
+        SERVER,
+        CLIENT
+    }
+
+    private KEY_TYPE keyType;
     private byte[] signature;
 
-    public Setup() {
+    public Setup(KEY_TYPE type) {
+        this.keyType = type;
+
         if (!Setup.keysExist()) {
-            System.out.println("Generating server keys...");
-            KeyHandler.generateKeyPair();
+            System.out.println("Generating keys...");
+            KeyHandler.generateKeyPair(keyType, keyFile);
         }
 
-        Key privateKey = KeyHandler.readPrivate("server");
+        Key privateKey = KeyHandler.readPrivate(keyFile);
 
         // Generate our signature to be passed to clients
         signature = Signature.generateSignature(privateKey, Config.encryptionSignature);
@@ -37,13 +44,13 @@ public class Setup {
     }
 
     private static boolean publicKeyExists() {
-        File publicKey = new File("server.pub");
+        File publicKey = new File(keyFile + ".pub");
 
         return publicKey.isFile();
     }
 
     private static boolean privateKeyExists() {
-        File privateKey = new File("server.prv");
+        File privateKey = new File(keyFile + ".prv");
 
         return privateKey.isFile();
     }
@@ -53,12 +60,12 @@ public class Setup {
     }
 
     private static boolean deletePublicKey() {
-        File publicKey = new File("server.pub");
+        File publicKey = new File(keyFile + ".pub");
         return publicKey.delete();
     }
 
     private static boolean deletePrivateKey() {
-        File privateKey = new File("server.prv");
+        File privateKey = new File(keyFile + ".prv");
         return privateKey.delete();
     }
 }

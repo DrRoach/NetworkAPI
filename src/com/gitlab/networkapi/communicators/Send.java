@@ -1,4 +1,4 @@
-package main.java.com.github.networkapi.communicators;
+package com.gitlab.networkapi.communicators;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

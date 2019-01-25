@@ -1,4 +1,4 @@
-package main.java.com.github.networkapi.exceptions;
+package com.gitlab.networkapi.exceptions;
 
 public class ExceptionCodes {
     public static int FILE_NOT_FOUND = 1;

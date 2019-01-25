@@ -1,4 +1,4 @@
-package main.java.com.github.networkapi.exceptions;
+package com.gitlab.networkapi.exceptions;
 
 public class InvalidServerSignatureException extends RuntimeException {
     public InvalidServerSignatureException(String message) {

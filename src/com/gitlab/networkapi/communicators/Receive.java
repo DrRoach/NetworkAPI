@@ -1,6 +1,6 @@
-package main.java.com.github.networkapi.communicators;
+package com.gitlab.networkapi.communicators;
 
-import main.java.com.github.networkapi.Connection;
+import com.gitlab.networkapi.Connection;
 
 import java.io.DataInputStream;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package main.java.com.github.networkapi;
+package com.gitlab.networkapi;
 
 import java.io.IOException;
 import java.net.ServerSocket;

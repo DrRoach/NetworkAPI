@@ -1,7 +1,7 @@
-package main.java.com.github.networkapi;
+package com.gitlab.networkapi;
 
-import main.java.com.github.networkapi.encryption.setup.Setup;
-import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
+import com.gitlab.networkapi.encryption.setup.Setup;
+import com.gitlab.networkapi.exceptions.PortOutOfRangeException;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -96,7 +96,7 @@ public class Server {
 
     private void setupEncryption() {
         // Make sure that the server is fully setup before use
-        Setup setup = new Setup();
+        Setup setup = new Setup(Setup.KEY_TYPE.SERVER);
 
         // Set the server signature to be passed to clients
         signature = setup.getSignature();

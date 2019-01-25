@@ -1,4 +1,4 @@
-package main.java.com.github.networkapi.config;
+package com.gitlab.networkapi.config;
 
 /**
  * This class is used to store any configuration settings. Please be careful to

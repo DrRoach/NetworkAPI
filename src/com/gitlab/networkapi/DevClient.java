@@ -1,6 +1,4 @@
-package main.java.com.github.networkapi;
-
-import java.util.concurrent.TimeUnit;
+package com.gitlab.networkapi;
 
 public class DevClient extends Client {
     // Simplest constructor implementation which would be used by most people

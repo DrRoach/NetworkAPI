@@ -19,6 +19,6 @@ public class FileHandler {
     }
 
     public String getName() {
-        return file.getName();
+        return file.getAbsoluteFile().toString();
     }
 }

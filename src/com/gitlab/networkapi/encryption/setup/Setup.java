@@ -6,6 +6,7 @@ import com.gitlab.networkapi.encryption.Signature;
 
 import java.io.*;
 import java.security.Key;
+import java.util.Set;
 
 public class Setup {
     public static String keyFile = "networkapi";
@@ -20,19 +21,23 @@ public class Setup {
     public Setup(KEY_TYPE type) {
         this.keyType = type;
 
-        if (!Setup.keysExist()) {
+        if (!Setup.keyDirExists(type)) {
+            Setup.createKeyDir(type);
+        }
+
+        if (!Setup.keysExist(type)) {
             System.out.println("Generating keys...");
             KeyHandler.generateKeyPair(keyType, keyFile);
         }
 
-        Key privateKey = KeyHandler.readPrivate(keyFile);
+        Key privateKey = KeyHandler.readPrivate(type, keyFile);
 
         // Generate our signature to be passed to clients
         signature = Signature.generateSignature(privateKey, Config.encryptionSignature);
     }
 
-    public static boolean keysExist() {
-        return Setup.publicKeyExists() && Setup.privateKeyExists();
+    public static boolean keysExist(KEY_TYPE type) {
+        return Setup.publicKeyExists(type) && Setup.privateKeyExists(type);
     }
 
     /**
@@ -43,20 +48,20 @@ public class Setup {
         return signature;
     }
 
-    private static boolean publicKeyExists() {
-        File publicKey = new File(keyFile + ".pub");
+    public static boolean deleteKeys() {
+        return Setup.deletePublicKey() && Setup.deletePrivateKey();
+    }
+
+    private static boolean publicKeyExists(KEY_TYPE type) {
+        File publicKey = new File(type + keyFile + ".pub");
 
         return publicKey.isFile();
     }
 
-    private static boolean privateKeyExists() {
-        File privateKey = new File(keyFile + ".prv");
+    private static boolean privateKeyExists(KEY_TYPE type) {
+        File privateKey = new File(type + keyFile + ".prv");
 
         return privateKey.isFile();
-    }
-
-    public static boolean deleteKeys() {
-        return Setup.deletePublicKey() && Setup.deletePrivateKey();
     }
 
     private static boolean deletePublicKey() {
@@ -67,5 +72,28 @@ public class Setup {
     private static boolean deletePrivateKey() {
         File privateKey = new File(keyFile + ".prv");
         return privateKey.delete();
+    }
+
+    private static boolean createKeyDir(KEY_TYPE type)
+    {
+        String dir;
+        if (type == KEY_TYPE.SERVER) {
+            dir = "server/";
+        } else {
+            dir = "client/";
+        }
+        return new File(dir).mkdirs();
+    }
+
+    private static boolean keyDirExists(KEY_TYPE type)
+    {
+        String dir;
+        if (type == KEY_TYPE.SERVER) {
+            dir = "server/";
+        } else {
+            dir = "client/";
+        }
+
+        return new File(dir).exists();
     }
 }

@@ -41,11 +41,18 @@ public class KeyHandler {
         return key;
     }
 
-    public static Key readPrivate(String keyFile) {
+    public static Key readPrivate(Setup.KEY_TYPE keyType, String keyFile) {
         Key key = null;
 
+        String keyDir;
+        if (keyType == Setup.KEY_TYPE.SERVER) {
+            keyDir = "server/";
+        } else {
+            keyDir = "client/";
+        }
+
         try {
-            FileHandler file = new FileHandler(keyFile + ".prv");
+            FileHandler file = new FileHandler(keyDir + keyFile + ".prv");
 
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(file.getName()));
 
@@ -74,13 +81,18 @@ public class KeyHandler {
 
             KeyPair keyPair = generator.generateKeyPair();
 
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(keyFile + ".pub"));
+            String keyDir;
+            if (keyType == Setup.KEY_TYPE.SERVER) {
+                keyDir = "server/";
+            } else {
+                keyDir = "client/";
+            }
+
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(keyDir + keyFile + ".pub"));
             out.writeObject(keyPair.getPublic());
             out.close();
 
-            System.out.println("GENREATING");
-
-            out = new ObjectOutputStream(new FileOutputStream("client/" + keyFile + ".prv"));
+            out = new ObjectOutputStream(new FileOutputStream(keyDir + keyFile + ".prv"));
             out.writeObject(keyPair.getPrivate());
         } catch (NoSuchAlgorithmException ex) {
             System.out.println(ex.getMessage());

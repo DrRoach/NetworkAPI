@@ -64,15 +64,13 @@ public class ConnectionHandler implements Runnable {
 
     public void messageReceived(String message) {
         if (useEncryption) {
-            if (message.isEmpty()) {
-                return;
-            }
-            System.out.println("MESSAGE: " + message);
             Key serverPrivateKey = KeyHandler.readPrivate("server");
             Encrypt encrypt = new Encrypt(serverPrivateKey);
             byte[] decryptedMessage = encrypt.decrypt(message.getBytes());
 
-            System.out.println(decryptedMessage.toString());
+            String decryptedString = new String(decryptedMessage);
+
+            System.out.println("DECRYPTED: " + decryptedString);
         } else {
             callbacks.messageReceived(message);
         }

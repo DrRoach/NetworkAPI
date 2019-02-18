@@ -16,8 +16,8 @@ public class Send implements Runnable {
 
     public void send() {
         try {
-            message = addNullChar();
-            out.write(message);
+            String messageToSend = new String(message);
+            out.writeUTF(messageToSend);
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }

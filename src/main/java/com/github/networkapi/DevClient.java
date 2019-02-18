@@ -25,6 +25,6 @@ public class DevClient extends Client {
 
         System.out.println("HI " + message);
 
-        client.send("TESTING 4.0");
+        client.send("HI");
     }
 }

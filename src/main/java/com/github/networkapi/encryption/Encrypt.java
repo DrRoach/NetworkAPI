@@ -19,13 +19,13 @@ public class Encrypt {
 
     public byte[] encrypt(String message)
     {
-        byte[] encoded = Base64.getEncoder().encode(message.getBytes());
-
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, key);
 
-            return cipher.doFinal(encoded);
+            byte[] encrypted = cipher.doFinal(message.getBytes());
+
+            return Base64.getEncoder().encode(encrypted);
         } catch (NoSuchAlgorithmException ex) {
             System.out.println(ex.getMessage());
         } catch (NoSuchPaddingException ex) {
@@ -44,12 +44,12 @@ public class Encrypt {
     public byte[] decrypt(byte[] message)
     {
         try {
-            Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
+            Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, key);
 
-            byte[] decrypted = cipher.doFinal(message);
+            byte[] decoded = Base64.getDecoder().decode(message);
 
-            return Base64.getDecoder().decode(decrypted);
+            return cipher.doFinal(decoded);
         } catch (NoSuchAlgorithmException ex) {
             System.out.println(ex.getMessage());
         } catch (NoSuchPaddingException ex) {

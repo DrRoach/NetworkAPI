@@ -7,9 +7,12 @@ public class DevClient extends Client {
     //public DevClient(String host, int port) {
     //    super(host, port);
     //}
+    DevClient client;
 
     public DevClient(String host, int port, int timeout) {
         super(host, port, timeout);
+
+        client = this;
     }
 
     public static void main(String[] args) {
@@ -21,5 +24,7 @@ public class DevClient extends Client {
         super.messageReceived(message);
 
         System.out.println("HI " + message);
+
+        client.send("TESTING 4.0");
     }
 }

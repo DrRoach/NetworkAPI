@@ -1,5 +1,7 @@
 package main.java.com.github.networkapi;
 
+import main.java.com.github.networkapi.encryption.Encrypt;
+import main.java.com.github.networkapi.encryption.KeyHandler;
 import main.java.com.github.networkapi.encryption.Verifier;
 import main.java.com.github.networkapi.exceptions.ClientConnectionFailedException;
 import main.java.com.github.networkapi.exceptions.ExceptionCodes;
@@ -11,6 +13,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.security.Key;
 
 public class Client {
     private Connection connection;
@@ -40,7 +43,7 @@ public class Client {
      * @param timeout
      */
     public Client(String host, int port, int timeout) {
-        setupClient(host, port, timeout, false);
+        setupClient(host, port, timeout, true);
     }
 
     public Client(String host, int port, int timeout, boolean useEncryption) {
@@ -49,7 +52,6 @@ public class Client {
 
     private void setupClient(String host, int port, int timeout, boolean useEncryption)
     {
-        useEncryption = false;
         // Set whether or not we're using encryption
         this.useEncryption = useEncryption;
 
@@ -95,7 +97,15 @@ public class Client {
     }
 
     public void send(String message) {
-        connection.send(message);
+        if (useEncryption) {
+            Key serverPublicKey = KeyHandler.readPublic("server");
+            Encrypt encrypt = new Encrypt(serverPublicKey);
+            byte[] encryptedMessage = encrypt.encrypt(message);
+
+            connection.send(encryptedMessage);
+        } else {
+            connection.send(message);
+        }
     }
 
     public InetAddress getAddress() {

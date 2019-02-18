@@ -1,8 +1,12 @@
 package main.java.com.github.networkapi;
 
+import main.java.com.github.networkapi.encryption.Encrypt;
+import main.java.com.github.networkapi.encryption.KeyHandler;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +63,19 @@ public class ConnectionHandler implements Runnable {
     }
 
     public void messageReceived(String message) {
-        callbacks.messageReceived(message);
+        if (useEncryption) {
+            if (message.isEmpty()) {
+                return;
+            }
+            System.out.println("MESSAGE: " + message);
+            Key serverPrivateKey = KeyHandler.readPrivate("server");
+            Encrypt encrypt = new Encrypt(serverPrivateKey);
+            byte[] decryptedMessage = encrypt.decrypt(message.getBytes());
+
+            System.out.println(decryptedMessage.toString());
+        } else {
+            callbacks.messageReceived(message);
+        }
     }
 
     public void connectionClosed(int id) {

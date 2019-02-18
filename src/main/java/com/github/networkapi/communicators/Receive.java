@@ -2,6 +2,7 @@ package main.java.com.github.networkapi.communicators;
 
 import main.java.com.github.networkapi.Connection;
 
+import javax.annotation.processing.SupportedSourceVersion;
 import java.io.DataInputStream;
 import java.io.IOException;
 
@@ -17,12 +18,15 @@ public class Receive implements Runnable {
     public void run() {
         try {
             int read;
+
             StringBuilder returnString = new StringBuilder();
             while (running) {
                 // Read our byte array until we find a null character
                 while ((read = in.readByte()) > -1) {
                     returnString.append((char) read);
                 }
+
+                System.out.println(returnString.toString());
 
                 // If the returnString has something in it then notify connection and then
                 //  reset the StringBuilder

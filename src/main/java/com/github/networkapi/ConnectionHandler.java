@@ -70,7 +70,7 @@ public class ConnectionHandler implements Runnable {
 
             String decryptedString = new String(decryptedMessage);
 
-            System.out.println("DECRYPTED: " + decryptedString);
+            callbacks.messageReceived(decryptedString);
         } else {
             callbacks.messageReceived(message);
         }

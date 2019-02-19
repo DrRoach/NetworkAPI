@@ -76,9 +76,9 @@ public class Server {
 
             // If we are using encryption we need to make sure to pass our signature
             if (useEncryption) {
-                connectionHandler = new ConnectionHandler(server, signature);
+                connectionHandler = new ConnectionHandler(server, true);
             } else {
-                connectionHandler = new ConnectionHandler(server);
+                connectionHandler = new ConnectionHandler(server, false);
             }
 
             Thread connectionThread = new Thread(connectionHandler);

@@ -16,6 +16,7 @@ public class Send implements Runnable {
 
     public void send() {
         try {
+            System.out.println(message);
             String messageToSend = new String(message);
             out.writeUTF(messageToSend);
         } catch (IOException ex) {
@@ -29,29 +30,5 @@ public class Send implements Runnable {
 
     public void setMessage(byte[] message) {
         this.message = message;
-    }
-
-    /**
-     * Add null byte to end of the byte array
-     *
-     * Take the message that is to be sent and append a null byte onto the end of it
-     *  in order to make sure that we know when we're at the end of our message
-     *
-     * @return - Original message byte array with NULL byte appended at the end
-     */
-    private byte[] addNullChar() {
-        // Create our result array with +1 size to account for NULL byte
-        byte[] result = new byte[message.length + 1];
-
-        // Create our null byte array to be copied onto the end
-        byte[] nullByte = new byte[1];
-        nullByte[0] = (byte) -1;
-
-        // Merge the message and null byte arrays together
-        System.arraycopy(message, 0, result, 0, message.length);
-        System.arraycopy(nullByte, 0, result, message.length, 1);
-
-        // Return our newly created array
-        return result;
     }
 }

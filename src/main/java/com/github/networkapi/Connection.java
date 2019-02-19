@@ -2,12 +2,15 @@ package main.java.com.github.networkapi;
 
 import main.java.com.github.networkapi.communicators.Receive;
 import main.java.com.github.networkapi.communicators.Send;
+import main.java.com.github.networkapi.encryption.Encrypt;
+import main.java.com.github.networkapi.encryption.KeyHandler;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.security.Key;
 
 public class Connection implements Runnable {
     private Socket conn;
@@ -15,6 +18,7 @@ public class Connection implements Runnable {
     private ConnectionHandler serverCallbacks = null;
     private Client clientCallbacks = null;
     private int id = -1;
+    private Key connectionPublicKey;
 
     Connection(Socket conn) {
         this.conn = conn;
@@ -45,6 +49,8 @@ public class Connection implements Runnable {
             // If instance of Connection object is a Server then call `newConnection()`
             if (serverCallbacks != null) {
                 serverCallbacks.newConnection(this);
+            } else {
+                clientCallbacks.connectedToServer();
             }
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -52,7 +58,14 @@ public class Connection implements Runnable {
     }
 
     public void send(String message) {
-        send.setMessage(message);
+        if (connectionPublicKey != null) {
+            Encrypt encrypt = new Encrypt(connectionPublicKey);
+            byte[] encryptedMessage = encrypt.encrypt(message);
+            send.setMessage(encryptedMessage);
+        } else {
+            send.setMessage(message);
+        }
+
         send.send();
     }
 
@@ -67,7 +80,12 @@ public class Connection implements Runnable {
 
     public void messageReceived(String message) {
         if (serverCallbacks != null) {
-            serverCallbacks.messageReceived(message);
+            System.out.println("RECEIVED");
+            if (connectionPublicKey == null) {
+                connectionPublicKey = KeyHandler.generateFromBytes(message.getBytes());
+            } else {
+                serverCallbacks.messageReceived(message);
+            }
         } else {
             clientCallbacks.messageReceived(message);
         }

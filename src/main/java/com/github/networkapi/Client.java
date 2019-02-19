@@ -15,11 +15,14 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.security.Key;
+import java.security.KeyFactory;
+import java.security.spec.RSAPublicKeySpec;
 
 public class Client {
     private Connection connection;
     private boolean useEncryption;
     private boolean serverVerified = false;
+    private boolean sentPublic = false;
 
     /**
      * Constructor that is called when user wants to use default timeout.
@@ -93,6 +96,12 @@ public class Client {
     public void messageReceived(String message) {
         if (useEncryption && !serverVerified) {
             validateServerSignature(message);
+        } else if (useEncryption) {
+            Key clientPrivateKey = KeyHandler.readPrivate("key", KeyHandler.Type.Client);
+            Encrypt encrypt = new Encrypt(clientPrivateKey);
+            String decryptedMessage = new String(encrypt.decrypt(message.getBytes()));
+
+            System.out.println("DECRYPTED: " + decryptedMessage);
         }
     }
 
@@ -102,7 +111,7 @@ public class Client {
     }
 
     public void send(String message) {
-        if (useEncryption) {
+        if (useEncryption && sentPublic) {
             Key serverPublicKey = KeyHandler.readPublic("key", KeyHandler.Type.Server);
             Encrypt encrypt = new Encrypt(serverPublicKey);
             byte[] encryptedMessage = encrypt.encrypt(message);
@@ -110,11 +119,29 @@ public class Client {
             connection.send(encryptedMessage);
         } else {
             connection.send(message);
+
+            if (!sentPublic && useEncryption) {
+                sentPublic = true;
+            }
         }
     }
 
     public InetAddress getAddress() {
         return connection.getAddress();
+    }
+
+    public void connectedToServer()
+    {
+        System.out.println("SENDING PUB");
+        Key publicKey = KeyHandler.readPublic("key", KeyHandler.Type.Client);
+        try {
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+            RSAPublicKeySpec pub = factory.getKeySpec(publicKey, RSAPublicKeySpec.class);
+
+            this.send(pub.getModulus() + ":" + pub.getPublicExponent());
+        } catch (Exception ex) {
+
+        }
     }
 
     public boolean connected() {

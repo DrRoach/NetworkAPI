@@ -21,7 +21,7 @@ public class DevHost extends Server {
     public void newConnection(Connection connection) {
         super.newConnection(connection);
 
-        connection.send("Hello new client");
+        //connection.send("Hello new client");
     }
 
     @Override

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.security.Key;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,19 +17,12 @@ public class ConnectionHandler implements Runnable {
     private ServerSocket server;
     private List<Connection> connections = new ArrayList<Connection>();
     private Server callbacks;
-    private byte[] signature;
-    private boolean useEncryption = true;
+    private boolean useEncryption;
 
-    ConnectionHandler(ServerSocket server) {
+    ConnectionHandler(ServerSocket server, boolean useEncryption) {
         running = true;
         this.server = server;
-        this.useEncryption = false;
-    }
-
-    ConnectionHandler(ServerSocket server, byte[] signature) {
-        running = true;
-        this.server = server;
-        this.signature = signature;
+        this.useEncryption = useEncryption;
     }
 
     public void run() {

@@ -4,8 +4,14 @@ import main.java.com.github.networkapi.exceptions.ExceptionCodes;
 import main.java.com.github.networkapi.exceptions.FileNotFoundException;
 import main.java.com.github.networkapi.FileHandler;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.*;
+import java.math.BigInteger;
 import java.security.*;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 
 public class KeyHandler {
     public enum Type {
@@ -94,6 +100,26 @@ public class KeyHandler {
             System.out.println(ex.getMessage());
             System.exit(ExceptionCodes.SERVER_PUBLIC_KEY_IO_EXCEPTION);
         }
+    }
+
+    public static Key generateFromBytes(byte[] keyBytes)
+    {
+        try {
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+
+            String keyString = new String(keyBytes);
+            String[] splitKey = keyString.split(":");
+
+            RSAPublicKeySpec keySpec = new RSAPublicKeySpec(new BigInteger(splitKey[0]), new BigInteger(splitKey[1]));
+
+            return factory.generatePublic(keySpec);
+        } catch (NoSuchAlgorithmException ex) {
+            System.out.println(ex.getMessage());
+        } catch (InvalidKeySpecException ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return null;
     }
 
     private static String getKeyDir(Type type)

@@ -64,7 +64,7 @@ public class ConnectionHandler implements Runnable {
 
     public void messageReceived(String message) {
         if (useEncryption) {
-            Key serverPrivateKey = KeyHandler.readPrivate("server");
+            Key serverPrivateKey = KeyHandler.readPrivate("key", KeyHandler.Type.Server);
             Encrypt encrypt = new Encrypt(serverPrivateKey);
             byte[] decryptedMessage = encrypt.decrypt(message.getBytes());
 

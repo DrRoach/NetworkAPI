@@ -12,10 +12,10 @@ public class ServerSetup {
     public ServerSetup() {
         if (!ServerSetup.keysExist()) {
             System.out.println("Generating server keys...");
-            KeyHandler.generateKeyPair();
+            KeyHandler.generateKeyPair(KeyHandler.Type.Server);
         }
 
-        Key privateKey = KeyHandler.readPrivate("server");
+        Key privateKey = KeyHandler.readPrivate("key", KeyHandler.Type.Server);
 
         // Generate our signature to be passed to clients
         signature = ServerSignature.generateSignature(privateKey, Config.encryptionSignature);

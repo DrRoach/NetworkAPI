@@ -1,6 +1,8 @@
 package main.java.com.github.networkapi;
 
+import main.java.com.github.networkapi.encryption.KeyHandler;
 import main.java.com.github.networkapi.encryption.ServerSetup;
+import main.java.com.github.networkapi.encryption.Setup;
 import main.java.com.github.networkapi.exceptions.PortOutOfRangeException;
 
 import java.io.IOException;
@@ -96,7 +98,7 @@ public class Server {
 
     private void setupEncryption() {
         // Make sure that the server is fully setup before use
-        ServerSetup serverSetup = new ServerSetup();
+        Setup serverSetup = new Setup(KeyHandler.Type.Server);
 
         // Set the server signature to be passed to clients
         signature = serverSetup.getSignature();

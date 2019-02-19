@@ -25,7 +25,7 @@ public class Verifier {
         try {
             Signature signature = Signature.getInstance("SHA1withRSA");
 
-            Key serverPublicKey = KeyHandler.readPublic("server");
+            Key serverPublicKey = KeyHandler.readPublic("key", KeyHandler.Type.Server);
 
             signature.initVerify((PublicKey) serverPublicKey);
 

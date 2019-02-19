@@ -19,7 +19,7 @@ public class FileHandler {
         }
     }
 
-    public String getName() {
-        return file.getName();
+    public String getAbsolutePath() {
+        return file.getAbsolutePath();
     }
 }

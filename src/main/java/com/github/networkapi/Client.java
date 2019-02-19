@@ -2,6 +2,7 @@ package main.java.com.github.networkapi;
 
 import main.java.com.github.networkapi.encryption.Encrypt;
 import main.java.com.github.networkapi.encryption.KeyHandler;
+import main.java.com.github.networkapi.encryption.Setup;
 import main.java.com.github.networkapi.encryption.Verifier;
 import main.java.com.github.networkapi.exceptions.ClientConnectionFailedException;
 import main.java.com.github.networkapi.exceptions.ExceptionCodes;
@@ -55,6 +56,10 @@ public class Client {
         // Set whether or not we're using encryption
         this.useEncryption = useEncryption;
 
+        if (useEncryption) {
+            Setup clienSetup = new Setup(KeyHandler.Type.Client);
+        }
+
         // Make sure that our port is in range
         if (port < 0 || port > 65535) {
             throw new PortOutOfRangeException("You can only use port 0-65535");
@@ -98,7 +103,7 @@ public class Client {
 
     public void send(String message) {
         if (useEncryption) {
-            Key serverPublicKey = KeyHandler.readPublic("server");
+            Key serverPublicKey = KeyHandler.readPublic("key", KeyHandler.Type.Server);
             Encrypt encrypt = new Encrypt(serverPublicKey);
             byte[] encryptedMessage = encrypt.encrypt(message);
 

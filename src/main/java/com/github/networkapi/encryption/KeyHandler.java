@@ -8,13 +8,20 @@ import java.io.*;
 import java.security.*;
 
 public class KeyHandler {
-    public static Key readPublic(String keyFile) {
+    public enum Type {
+        Client,
+        Server
+    }
+
+    public static Key readPublic(String keyFile, Type type) {
         Key key = null;
 
-        try {
-            FileHandler file = new FileHandler(keyFile + ".pub");
+        String keyDir = getKeyDir(type);
 
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file.getName()));
+        try {
+            FileHandler file = new FileHandler(keyDir + keyFile + ".pub");
+
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file.getAbsolutePath()));
 
             key = (Key) in.readObject();
 
@@ -33,19 +40,22 @@ public class KeyHandler {
         return key;
     }
 
-    public static Key readPrivate(String keyFile) {
+    public static Key readPrivate(String keyFile, Type type) {
         Key key = null;
 
-        try {
-            FileHandler file = new FileHandler(keyFile + ".prv");
+        String keyDir = getKeyDir(type);
 
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file.getName()));
+        try {
+            FileHandler file = new FileHandler(keyDir + keyFile + ".prv");
+
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream(file.getAbsolutePath()));
 
             // Read the key from file
             key = (PrivateKey) in.readObject();
 
             in.close();
         } catch (java.io.FileNotFoundException ex) {
+            System.out.println(keyDir + keyFile + ".prv");
             System.out.println(ex.getMessage());
             System.exit(ExceptionCodes.PRIVATE_KEY_NOT_FOUND);
         } catch (IOException ex) {
@@ -59,18 +69,20 @@ public class KeyHandler {
         return key;
     }
 
-    public static void generateKeyPair() {
+    public static void generateKeyPair(Type type) {
+        String keyDir = getKeyDir(type);
+
         try {
             KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
             generator.initialize(2048);
 
             KeyPair keyPair = generator.generateKeyPair();
 
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("server.pub"));
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(keyDir + "key.pub"));
             out.writeObject(keyPair.getPublic());
             out.close();
 
-            out = new ObjectOutputStream(new FileOutputStream("server.prv"));
+            out = new ObjectOutputStream(new FileOutputStream(keyDir + "key.prv"));
             out.writeObject(keyPair.getPrivate());
         } catch (NoSuchAlgorithmException ex) {
             System.out.println(ex.getMessage());
@@ -81,6 +93,15 @@ public class KeyHandler {
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
             System.exit(ExceptionCodes.SERVER_PUBLIC_KEY_IO_EXCEPTION);
+        }
+    }
+
+    private static String getKeyDir(Type type)
+    {
+        if (type == Type.Client) {
+            return "./client/";
+        } else {
+            return "./server/";
         }
     }
 }

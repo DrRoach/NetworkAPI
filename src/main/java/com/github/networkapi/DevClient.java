@@ -16,14 +16,14 @@ public class DevClient extends Client {
     }
 
     public static void main(String[] args) {
-        DevClient client = new DevClient("localhost", 2103, 1000);
+        new DevClient("localhost", 2103, 1000);
     }
 
     @Override
     public void messageReceived(String message) {
         super.messageReceived(message);
 
-        System.out.println("HI " + message);
+        System.out.println(message);
 
         client.send("HI");
     }

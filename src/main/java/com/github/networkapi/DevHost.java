@@ -21,6 +21,7 @@ public class DevHost extends Server {
     public void newConnection(Connection connection) {
         super.newConnection(connection);
 
+        // TODO: Fix bug when sending message here.
         //connection.send("Hello new client");
     }
 

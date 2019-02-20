@@ -30,7 +30,7 @@ public class ConnectionHandler implements Runnable {
             try {
                 Socket client = server.accept();
 
-                Connection conn = new Connection(connections.size(), client);
+                Connection conn = new Connection(connections.size(), client, useEncryption);
 
                 conn.setCallbacks(this);
 

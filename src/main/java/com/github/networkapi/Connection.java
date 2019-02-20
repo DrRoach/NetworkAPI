@@ -19,6 +19,7 @@ public class Connection implements Runnable {
     private Client clientCallbacks = null;
     private int id = -1;
     private Key connectionPublicKey;
+    private boolean useEncryption;
 
     Connection(Socket conn) {
         this.conn = conn;
@@ -27,6 +28,14 @@ public class Connection implements Runnable {
     Connection(int id, Socket conn) {
         this.id = id;
         this.conn = conn;
+        this.useEncryption = false;
+    }
+
+    Connection(int id, Socket conn, boolean useEncryption)
+    {
+        this.id = id;
+        this.conn = conn;
+        this.useEncryption = useEncryption;
     }
 
     public void run() {
@@ -80,8 +89,7 @@ public class Connection implements Runnable {
 
     public void messageReceived(String message) {
         if (serverCallbacks != null) {
-            System.out.println("RECEIVED");
-            if (connectionPublicKey == null) {
+            if (connectionPublicKey == null && useEncryption) {
                 connectionPublicKey = KeyHandler.generateFromBytes(message.getBytes());
             } else {
                 serverCallbacks.messageReceived(message);

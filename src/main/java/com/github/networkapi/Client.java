@@ -23,6 +23,7 @@ public class Client {
     private boolean useEncryption;
     private boolean serverVerified = false;
     private boolean sentPublic = false;
+    private String message;
 
     /**
      * Constructor that is called when user wants to use default timeout.
@@ -96,13 +97,23 @@ public class Client {
     public void messageReceived(String message) {
         if (useEncryption && !serverVerified) {
             validateServerSignature(message);
+            return;
         } else if (useEncryption) {
             Key clientPrivateKey = KeyHandler.readPrivate("key", KeyHandler.Type.Client);
             Encrypt encrypt = new Encrypt(clientPrivateKey);
             String decryptedMessage = new String(encrypt.decrypt(message.getBytes()));
 
-            System.out.println("DECRYPTED: " + decryptedMessage);
+            this.message = decryptedMessage;
+            return;
         }
+
+        this.message = message;
+        return;
+    }
+
+    public String getMessage()
+    {
+        return this.message;
     }
 
     public void connectionClosed(int id) {
@@ -132,7 +143,6 @@ public class Client {
 
     public void connectedToServer()
     {
-        System.out.println("SENDING PUB");
         Key publicKey = KeyHandler.readPublic("key", KeyHandler.Type.Client);
         try {
             KeyFactory factory = KeyFactory.getInstance("RSA");

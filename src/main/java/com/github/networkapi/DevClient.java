@@ -19,12 +19,26 @@ public class DevClient extends Client {
         new DevClient("localhost", 2103, 1000);
     }
 
-    @Override
     public void messageReceived(String message) {
         super.messageReceived(message);
+
+        message = getMessage();
+
+        // Message will be `null` on the first message received whilst using encryption.
+        //  This is because the
+        if (message == null) {
+            return;
+        }
 
         System.out.println(message);
 
         client.send("HI");
+    }
+
+    public void connectedToServer()
+    {
+        super.connectedToServer();
+
+        System.out.println("CONNECTED TO SERVER");
     }
 }

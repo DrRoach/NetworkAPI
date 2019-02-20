@@ -143,14 +143,16 @@ public class Client {
 
     public void connectedToServer()
     {
-        Key publicKey = KeyHandler.readPublic("key", KeyHandler.Type.Client);
-        try {
-            KeyFactory factory = KeyFactory.getInstance("RSA");
-            RSAPublicKeySpec pub = factory.getKeySpec(publicKey, RSAPublicKeySpec.class);
+        if (useEncryption) {
+            Key publicKey = KeyHandler.readPublic("key", KeyHandler.Type.Client);
+            try {
+                KeyFactory factory = KeyFactory.getInstance("RSA");
+                RSAPublicKeySpec pub = factory.getKeySpec(publicKey, RSAPublicKeySpec.class);
 
-            this.send(pub.getModulus() + ":" + pub.getPublicExponent());
-        } catch (Exception ex) {
+                this.send(pub.getModulus() + ":" + pub.getPublicExponent());
+            } catch (Exception ex) {
 
+            }
         }
     }
 

@@ -24,6 +24,7 @@ public class Client {
     private boolean serverVerified = false;
     private boolean sentPublic = false;
     private String message;
+    private Key serverPublicKey;
 
     /**
      * Constructor that is called when user wants to use default timeout.
@@ -98,6 +99,9 @@ public class Client {
         if (useEncryption && !serverVerified) {
             validateServerSignature(message);
             return;
+        } else if (useEncryption && serverPublicKey == null) {
+            serverPublicKey = KeyHandler.generateFromBytes(message.getBytes());
+            return;
         } else if (useEncryption) {
             Key clientPrivateKey = KeyHandler.readPrivate("key", KeyHandler.Type.Client);
             Encrypt encrypt = new Encrypt(clientPrivateKey);
@@ -123,7 +127,7 @@ public class Client {
 
     public void send(String message) {
         if (useEncryption && sentPublic) {
-            Key serverPublicKey = KeyHandler.readPublic("key", KeyHandler.Type.Server);
+            //TODO: Send this key from the server to the client
             Encrypt encrypt = new Encrypt(serverPublicKey);
             byte[] encryptedMessage = encrypt.encrypt(message);
 

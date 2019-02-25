@@ -25,7 +25,6 @@ public class DevClient extends Client {
         message = getMessage();
 
         // Message will be `null` on the first message received whilst using encryption.
-        //  This is because the
         if (message == null) {
             return;
         }

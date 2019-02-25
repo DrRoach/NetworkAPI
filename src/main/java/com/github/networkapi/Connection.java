@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.security.Key;
+import java.security.KeyFactory;
+import java.security.spec.RSAPublicKeySpec;
 
 public class Connection implements Runnable {
     private Socket conn;
@@ -20,6 +22,7 @@ public class Connection implements Runnable {
     private int id = -1;
     private Key connectionPublicKey;
     private boolean useEncryption;
+    private boolean sentPublicKey = false;
 
     Connection(Socket conn) {
         this.conn = conn;
@@ -67,7 +70,7 @@ public class Connection implements Runnable {
     }
 
     public void send(String message) {
-        if (connectionPublicKey != null) {
+        if (connectionPublicKey != null && sentPublicKey) {
             Encrypt encrypt = new Encrypt(connectionPublicKey);
             byte[] encryptedMessage = encrypt.encrypt(message);
             send.setMessage(encryptedMessage);
@@ -91,6 +94,18 @@ public class Connection implements Runnable {
         if (serverCallbacks != null) {
             if (connectionPublicKey == null && useEncryption) {
                 connectionPublicKey = KeyHandler.generateFromBytes(message.getBytes());
+
+                // Send the server public key back
+                Key publicKey = KeyHandler.readPublic("key", KeyHandler.Type.Server);
+                try {
+                    KeyFactory factory = KeyFactory.getInstance("RSA");
+                    RSAPublicKeySpec pub = factory.getKeySpec(publicKey, RSAPublicKeySpec.class);
+
+                    this.send(pub.getModulus() + ":" + pub.getPublicExponent());
+                    sentPublicKey = true;
+                } catch (Exception ex) {
+                    System.out.println("FAILED TO SEND SERVER PUBLIC KEY");
+                }
             } else {
                 serverCallbacks.messageReceived(message);
             }

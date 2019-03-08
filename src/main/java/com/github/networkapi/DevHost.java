@@ -26,7 +26,7 @@ public class DevHost extends Server {
     }
 
     @Override
-    public void messageReceived(String message) {
+    public void messageReceived(Connection connection, String message) {
         System.out.println(message);
     }
 

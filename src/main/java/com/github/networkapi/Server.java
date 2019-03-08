@@ -143,7 +143,9 @@ public class Server {
      *
      * @param message Message received from the client
      */
-    public void messageReceived(String message) {
+    public void messageReceived(Connection connection, String message)
+    {
+
     }
 
     public void connectionClosed(int id) {

@@ -1,5 +1,6 @@
 package main.java.com.github.networkapi;
 
+import main.java.com.github.networkapi.commands.GetPublic;
 import main.java.com.github.networkapi.encryption.Encrypt;
 import main.java.com.github.networkapi.encryption.KeyHandler;
 
@@ -56,7 +57,7 @@ public class ConnectionHandler implements Runnable {
         }
     }
 
-    public void messageReceived(String message) {
+    public void messageReceived(int connectionId, String message) {
         if (useEncryption) {
             Key serverPrivateKey = KeyHandler.readPrivate("key", KeyHandler.Type.Server);
             Encrypt encrypt = new Encrypt(serverPrivateKey);
@@ -64,9 +65,16 @@ public class ConnectionHandler implements Runnable {
 
             String decryptedString = new String(decryptedMessage);
 
-            callbacks.messageReceived(decryptedString);
+            boolean command = decryptedString.substring(0, 1).equals("!");
+
+            if (command) {
+                handleCommand(connectionId, decryptedString.substring(1));
+                return;
+            }
+
+            callbacks.messageReceived(connections.get(connectionId), decryptedString);
         } else {
-            callbacks.messageReceived(message);
+            callbacks.messageReceived(connections.get(connectionId), message);
         }
     }
 
@@ -86,5 +94,19 @@ public class ConnectionHandler implements Runnable {
 
     public void stop() {
         running = false;
+    }
+
+    private void handleCommand(int connectionId, String command)
+    {
+        System.out.println(connectionId);
+        System.out.println(command);
+        String commandSplit[] = command.split(":");
+        switch (commandSplit[0]) {
+            case "get_public":
+                Connection connectionToFetchKey = connections.get(Integer.parseInt(commandSplit[1]));
+
+                connections.get(connectionId).send(connectionToFetchKey.getPublicKey());
+                break;
+        }
     }
 }

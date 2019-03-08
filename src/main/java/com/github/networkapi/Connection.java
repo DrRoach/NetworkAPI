@@ -107,7 +107,7 @@ public class Connection implements Runnable {
                     System.out.println("FAILED TO SEND SERVER PUBLIC KEY");
                 }
             } else {
-                serverCallbacks.messageReceived(message);
+                serverCallbacks.messageReceived(this.id, message);
             }
         } else {
             clientCallbacks.messageReceived(message);
@@ -128,5 +128,20 @@ public class Connection implements Runnable {
         } else {
             clientCallbacks.connectionClosed(id);
         }
+    }
+
+    public String getPublicKey()
+    {
+        Key publicKey = KeyHandler.readPublic("key", KeyHandler.Type.Server);
+        try {
+            KeyFactory factory = KeyFactory.getInstance("RSA");
+            RSAPublicKeySpec pub = factory.getKeySpec(publicKey, RSAPublicKeySpec.class);
+
+            return pub.getModulus() + ":" + pub.getPublicExponent();
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
+
+        return "";
     }
 }

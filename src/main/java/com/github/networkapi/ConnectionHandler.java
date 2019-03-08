@@ -45,10 +45,12 @@ public class ConnectionHandler implements Runnable {
         }
     }
 
-    public void broadcast(String message) {
+    public boolean broadcast(String message) {
         for (Connection conn : connections) {
             conn.send(message);
         }
+
+        return true;
     }
 
     public void broadcast(byte[] message) {

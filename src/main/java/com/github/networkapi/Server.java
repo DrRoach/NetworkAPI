@@ -112,8 +112,8 @@ public class Server {
      *
      * @param message The message that will be sent to the connected clients
      */
-    public void broadcast(String message) {
-        connectionHandler.broadcast(message);
+    public boolean broadcast(String message) {
+        return connectionHandler.broadcast(message);
     }
 
     /**
@@ -160,6 +160,7 @@ public class Server {
         try {
             // Let our connection handler know that we're stopping
             connectionHandler.stop();
+            connectionHandler = null;
 
             // Close our server socket
             server.close();

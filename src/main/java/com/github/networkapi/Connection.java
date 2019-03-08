@@ -24,7 +24,7 @@ public class Connection implements Runnable {
     private boolean useEncryption;
     private boolean sentPublicKey = false;
 
-    Connection(Socket conn) {
+    public Connection(Socket conn) {
         this.conn = conn;
     }
 

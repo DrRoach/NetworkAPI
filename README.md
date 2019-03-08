@@ -46,7 +46,7 @@ public class Host extends Server {
     }
         
     public static void main(String[] args) {
-        _host = new Host(2103); 
+        _host = new Host(2103); // Starts server on port 2103 with `useEncryption = true`
     }
         
     @Override
@@ -64,7 +64,7 @@ Client file:
 ```Java
 public class DevClient extends Client {
     public static void main(String[] args) {
-        DevClient client = new DevClient("127.0.0.1", 2103); 
+        DevClient client = new DevClient("127.0.0.1", 2103); // Connects to local server on port 2103 with `useEncryption = true`
     }
         
     @Override
@@ -76,6 +76,13 @@ public class DevClient extends Client {
 
 With these two simple files we can now connect our clients to our server and message both our new clients individually and broadcast to all connected clients when we get a new connection. We also print any new messages that we get from the server in the clients' output stream.
 
+## Features
+
+- Send messages from server to client
+- Send messages from client to server
+- Validate server using signature
+
+- E2E encryption on both server and client
 ## Available Methods
 
 There are a number of different methods available to call in both the server and client classes, the main focus of these methods are the `send()` methods which are used to communicate between the server and client.
@@ -83,6 +90,26 @@ There are a number of different methods available to call in both the server and
 ### Server Methods
 
 `broadcast(String message)` - Broadcast the given `message` to all of the connected clients.
+
+`online()` - Returns boolean indicating whether or not a server is online.
+
+`stop()` - Closes all connections and stops the server.
+
+### Server Overrides
+
+`newConnection(Connection connection)` - Whenever a new connection is made to the server this method is called.
+
+`messageReceived(Connection connection, String message)` - Called when a new message is received from a connection.
+
+### Client Methods
+
+`getMessage()` - Returns message received as a `String`. It is advised to call this message from `messageReceived()` when using encryption to avoid the servers public key being mistaken for a message from the Server.
+
+### Client Overrides
+
+`messageReceived(String message)` - Whenever the client receives a new message this method is called.
+
+`connectedToServer()` - When the connection to server is made, this method is called. __MUST__ call super method if using encryption.
 
 ### Connection Methods (Available for both Server and Client)
 
@@ -92,30 +119,12 @@ These methods are available in both the server and client. To call these methods
 
 `getAddress()` - Get the address of the connection. If called from the server this will return the address of the client connection. If called from the client this will return the address of the server.
 
-## Overrides
-
-There are also a number of different methods that you can override to perform different actions on certain events.
-
-### Server Overrides
-
-`newConnection(Connection connection)` - Whenever a new connection is made to the server this method is called.
-
-`messageReceived(String message)` - Whenever the server receives a new message from a client this method is called.
-
 `connectionClosed(int id)` - Whenever a connection is closed this method is called.
-
-### Client Overrides
-
-`messageReceived(String message)` - Whenever the client receives a new message this method is called.
-
-`connectionClosed(int id)` - When the client loses it's connection to the server this method is called.
 
 ## Future Updates
 
 There are a number of different updates in the works including but not limited to:
 
-- Encrypted communication
 - Client-client messaging
 - Improved code testing
 - Improved code documentation
-- Server and client signature verification

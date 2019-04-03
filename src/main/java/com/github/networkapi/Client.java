@@ -25,6 +25,7 @@ public class Client {
     private boolean sentPublic = false;
     private String message;
     private Key serverPublicKey;
+    private Socket clientSocket;
 
     /**
      * Constructor that is called when user wants to use default timeout.
@@ -62,7 +63,7 @@ public class Client {
         this.useEncryption = useEncryption;
 
         if (useEncryption) {
-            Setup clienSetup = new Setup(KeyHandler.Type.Client);
+            Setup clientSetup = new Setup(KeyHandler.Type.Client);
         }
 
         // Make sure that our port is in range
@@ -74,12 +75,14 @@ public class Client {
             // Connect to our server
             // Create the socket address obj for our server
             SocketAddress serverAddress = new InetSocketAddress(host, port);
-            Socket client = new Socket();
+            clientSocket = new Socket();
             // Try and connect to our server socket
-            client.connect(serverAddress, timeout);
+            clientSocket.connect(serverAddress, timeout);
 
             // Handle our client/server interactions
-            handle(client);
+            handle(clientSocket);
+
+            System.out.println("Connected");
         } catch (IOException ex) {
             throw new ClientConnectionFailedException("There was an error when connecting to the server: " + ex.getMessage());
         }
@@ -161,7 +164,7 @@ public class Client {
     }
 
     public boolean connected() {
-        return connection != null;
+        return clientSocket.isClosed();
     }
 
     private void validateServerSignature(String signature) {

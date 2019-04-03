@@ -3,10 +3,6 @@ package main.java.com.github.networkapi;
 import java.util.concurrent.TimeUnit;
 
 public class DevClient extends Client {
-    // Simplest constructor implementation which would be used by most people
-    //public DevClient(String host, int port) {
-    //    super(host, port);
-    //}
     DevClient client;
 
     public DevClient(String host, int port, int timeout) {
@@ -24,7 +20,7 @@ public class DevClient extends Client {
 
         message = getMessage();
 
-        // Message will be `null` on the first message received whilst using encryption.
+        // Message will be `null` on the first message received or when server public key is sent whilst using encryption.
         if (message == null) {
             return;
         }
@@ -32,6 +28,7 @@ public class DevClient extends Client {
         System.out.println(message);
 
         client.send("HI");
+        //client.send("!get_public:1");
     }
 
     public void connectedToServer()

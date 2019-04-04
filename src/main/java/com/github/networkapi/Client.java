@@ -125,7 +125,6 @@ public class Client {
 
     public void connectionClosed(int id) {
         System.out.println("Lost connection to server");
-        System.exit(ExceptionCodes.CONNECTION_TO_SERVER_LOST);
     }
 
     public void send(String message) {

@@ -7,6 +7,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.contrib.java.lang.system.SystemOutRule;
 
+import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertEquals;
@@ -39,11 +40,38 @@ public class ClientTest {
     public void testConnectionClosed()
     {
         Server server = new Server(2103);
+        Client client = new Client("127.0.0.1", 2103);
+
+        systemOutRule.clearLog();
+
+        client.connectionClosed(0);
+
+        assertEquals("Lost connection to server\n", systemOutRule.getLog());
+
+        server.stop();
+    }
+
+    @Test
+    public void testConnected()
+    {
+        Server server = new Server(2103);
 
         Client client = new Client("127.0.0.1", 2103);
 
         server.stop();
 
         assertFalse(client.connected());
+    }
+
+    @Test
+    public void testGetAddress()
+    {
+        Server server = new Server(2103);
+
+        Client client = new Client("127.0.0.1", 2103);
+
+        assertEquals("/127.0.0.1", client.getAddress().toString());
+
+        server.stop();
     }
 }
